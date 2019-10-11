@@ -43,7 +43,7 @@ public class ModifierCurioRegistry {
 		IForgeRegistry<IModifierCurio> reg = event.getRegistry();
 		reg.register(NONE = new ModifierNone().setRegistryName(new ResourceLocation(ModifiersMod.MODID, "none")));
 		//+10x speed is a good way to make sure it's working. :P
-		register(reg, "speed", SharedMonsterAttributes.MOVEMENT_SPEED, 10, Operation.ADDITION, 0);
+//		register(reg, "speed", SharedMonsterAttributes.MOVEMENT_SPEED, 10, Operation.ADDITION, 0);
 		
 		register(reg, "half_hearted", SharedMonsterAttributes.MAX_HEALTH, 1, Operation.ADDITION, 3);
 		register(reg, "hearty", SharedMonsterAttributes.MAX_HEALTH, 2, Operation.ADDITION, 1);

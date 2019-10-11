@@ -1,20 +1,21 @@
 package cursedflames.modifiers.common.modifier.curio;
 
+import cursedflames.modifiers.common.ModifiersMod;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.event.LivingCurioChangeEvent;
 
 public class EventHandlerCurio {
-	
 	@SubscribeEvent
 	public static void onCurioChange(LivingCurioChangeEvent event) {
 //		PlayerEntity player, ItemStack stack, String identifier, int slot
@@ -27,15 +28,18 @@ public class EventHandlerCurio {
 		IModifierCurio modFrom = ModifierHandlerCurio.getCurioModifier(from);
 		IModifierCurio modTo = ModifierHandlerCurio.getCurioModifier(to);
 		if (modFrom != null) {
+			ModifiersMod.logger.info(modFrom);
 			modFrom.removeModifier(entity, from, identifier, slot);
 		}
 		if (modTo != null) {
+			ModifiersMod.logger.info(modTo);
 			modTo.applyModifier(entity, to, identifier, slot);
 		}
 		
 	}
 	
 	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)
 	public static void onTooltip(ItemTooltipEvent event) {
 		ItemStack stack = event.getItemStack();
 		IModifierCurio mod = ModifierHandlerCurio.getCurioModifier(stack);

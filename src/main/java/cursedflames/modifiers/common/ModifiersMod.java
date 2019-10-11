@@ -71,7 +71,7 @@ public class ModifiersMod {
 			logger.info("Hello world from the MDK");
 			return "Hello world";
 		});
-		// FIXME remove this, this is just for testing
+		// FIXME REMOVE TESTING
 		String[] slots = {"necklace", "head"};
 		// idk if there's a way to register multiple with one message
 		for (String slot : slots) {
