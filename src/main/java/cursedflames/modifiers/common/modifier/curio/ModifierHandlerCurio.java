@@ -10,6 +10,16 @@ import net.minecraft.util.ResourceLocation;
 public class ModifierHandlerCurio {
 	private static final Random RANDOM = new Random();
 	
+	public static String getTranslationKey(IModifierCurio modifier) {
+		ResourceLocation loc = modifier.getRegistryName();
+		return loc.getNamespace()+".modifier_curio."+loc.getPath();
+	}
+	
+	public static String getInfoTranslationKey(IModifierCurio modifier) {
+		ResourceLocation loc = modifier.getRegistryName();
+		return loc.getNamespace()+".modifier_curio."+loc.getPath()+".info";
+	}
+	
 	public static IModifierCurio getCurioModifier(ItemStack stack) {
 		CompoundNBT tag = stack.getTag();
 		if (tag == null) return null;

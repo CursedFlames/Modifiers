@@ -16,6 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
+//TODO categories for organization?
 public class ModifierCurioRegistry {
 	public static IModifierCurio NONE;
 	

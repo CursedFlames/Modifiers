@@ -5,11 +5,13 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cursedflames.modifiers.common.item.ModItems;
+import cursedflames.modifiers.common.modifier.EventHandler;
 import cursedflames.modifiers.common.modifier.curio.EventHandlerCurio;
 import cursedflames.modifiers.common.modifier.curio.IModifierCurio;
 import cursedflames.modifiers.common.modifier.curio.ModifierCurioRegistry;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,7 +28,7 @@ import top.theillusivec4.curios.api.imc.CurioIMCMessage;
 
 //The value here should match an entry in the META-INF/mods.toml file
 @Mod(ModifiersMod.MODID)
-public class ModifiersMod {
+public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 	public static final String MODID = "modifiers";
 
 	// Directly reference a log4j logger.
@@ -46,6 +48,7 @@ public class ModifiersMod {
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
 //		MinecraftForge.EVENT_BUS.register(ModifierCurioRegistry.class);
+		MinecraftForge.EVENT_BUS.register(EventHandler.class);
 		MinecraftForge.EVENT_BUS.register(EventHandlerCurio.class);
 	}
 
@@ -103,9 +106,8 @@ public class ModifiersMod {
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class RegistryEvents {
 		@SubscribeEvent
-		public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-			// register a new block here
-			logger.info("HELLO from Register Block");
+		public static void onItemRegistry(final RegistryEvent.Register<Item> event) {
+			ModItems.registerItems(event);
 		}
 		
 		@SubscribeEvent

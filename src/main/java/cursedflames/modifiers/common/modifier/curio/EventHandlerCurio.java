@@ -1,8 +1,8 @@
 package cursedflames.modifiers.common.modifier.curio;
 
-import cursedflames.modifiers.common.ModifiersMod;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -28,11 +28,11 @@ public class EventHandlerCurio {
 		IModifierCurio modFrom = ModifierHandlerCurio.getCurioModifier(from);
 		IModifierCurio modTo = ModifierHandlerCurio.getCurioModifier(to);
 		if (modFrom != null) {
-			ModifiersMod.logger.info(modFrom);
+//			ModifiersMod.logger.info(modFrom);
 			modFrom.removeModifier(entity, from, identifier, slot);
 		}
 		if (modTo != null) {
-			ModifiersMod.logger.info(modTo);
+//			ModifiersMod.logger.info(modTo);
 			modTo.applyModifier(entity, to, identifier, slot);
 		}
 		
@@ -46,12 +46,12 @@ public class EventHandlerCurio {
 		if (mod != null && mod != ModifierCurioRegistry.NONE) {
 			ResourceLocation loc = mod.getRegistryName();
 			event.getToolTip().add(new TranslationTextComponent(
-					loc.getNamespace()+".modifier."+loc.getPath()+".info")
+					ModifierHandlerCurio.getInfoTranslationKey(mod))
 					.setStyle(new Style().setColor(TextFormatting.BLUE)));
 			
 			ITextComponent name = event.getToolTip().get(0);
 			TranslationTextComponent prefix = new TranslationTextComponent(
-					loc.getNamespace()+".modifier."+loc.getPath());
+					ModifierHandlerCurio.getTranslationKey(mod));
 			prefix.setStyle(name.getStyle().createDeepCopy());
 			prefix.appendSibling(new StringTextComponent(" ")).appendSibling(name);
 //			String colorCode = "";
