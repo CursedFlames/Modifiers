@@ -17,6 +17,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
 public class ModifierCurioRegistry {
+	public static IModifierCurio NONE;
+	
 	public static IForgeRegistry<IModifierCurio> MODIFIERS_CURIO = null;
 	
 	public static void createRegistry(RegistryEvent.NewRegistry event) {
@@ -39,7 +41,7 @@ public class ModifierCurioRegistry {
 	public static void registerCurioModifiers(RegistryEvent.Register<IModifierCurio> event) {
 		ModifiersMod.logger.info("registering modifiers HJKL");
 		IForgeRegistry<IModifierCurio> reg = event.getRegistry();
-		reg.register(new ModifierNone().setRegistryName(new ResourceLocation(ModifiersMod.MODID, "none")));
+		reg.register(NONE = new ModifierNone().setRegistryName(new ResourceLocation(ModifiersMod.MODID, "none")));
 		//+10x speed is a good way to make sure it's working. :P
 		register(reg, "speed", SharedMonsterAttributes.MOVEMENT_SPEED, 10, Operation.ADDITION, 0);
 		

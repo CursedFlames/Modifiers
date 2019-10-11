@@ -3,7 +3,12 @@ package cursedflames.modifiers.common.modifier.curio;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.event.LivingCurioChangeEvent;
@@ -33,10 +38,33 @@ public class EventHandlerCurio {
 	@SubscribeEvent
 	public static void onTooltip(ItemTooltipEvent event) {
 		ItemStack stack = event.getItemStack();
-		CompoundNBT tag = stack.getTag();
-		if (tag != null) {
-			event.getToolTip().add(new StringTextComponent(tag.toString()));
+		IModifierCurio mod = ModifierHandlerCurio.getCurioModifier(stack);
+		if (mod != null && mod != ModifierCurioRegistry.NONE) {
+			ResourceLocation loc = mod.getRegistryName();
+			event.getToolTip().add(new TranslationTextComponent(
+					loc.getNamespace()+".modifier."+loc.getPath()+".info")
+					.setStyle(new Style().setColor(TextFormatting.BLUE)));
+			
+			ITextComponent name = event.getToolTip().get(0);
+			TranslationTextComponent prefix = new TranslationTextComponent(
+					loc.getNamespace()+".modifier."+loc.getPath());
+			prefix.setStyle(name.getStyle().createDeepCopy());
+			prefix.appendSibling(new StringTextComponent(" ")).appendSibling(name);
+//			String colorCode = "";
+//			while (name.length()>1&&name.charAt(0)=='\u00A7') {
+//				colorCode += name.substring(0, 2);
+//				name = name.substring(2);
+//			}
+////			if (colorCode.length() == 0) {
+////				colorCode = "\u00A70";
+////			}
+			event.getToolTip().set(0, prefix);
 		}
+		// you better not ever leave this uncommented in builds, future self
+//		CompoundNBT tag = stack.getTag();
+//		if (tag != null) {
+//			event.getToolTip().add(new StringTextComponent(tag.toString()));
+//		}
 	}
 	// disabled due to issues with items in JEI and creative tabs
 //	@SubscribeEvent(priority=EventPriority.LOW)
