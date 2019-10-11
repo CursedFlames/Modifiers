@@ -41,6 +41,25 @@ public class ModifierCurioRegistry {
 		IForgeRegistry<IModifierCurio> reg = event.getRegistry();
 		reg.register(new ModifierNone().setRegistryName(new ResourceLocation(ModifiersMod.MODID, "none")));
 		//+10x speed is a good way to make sure it's working. :P
-		register(reg, "speed", SharedMonsterAttributes.MOVEMENT_SPEED, 10, Operation.ADDITION, 100);
+		register(reg, "speed", SharedMonsterAttributes.MOVEMENT_SPEED, 10, Operation.ADDITION, 0);
+		
+		register(reg, "half_hearted", SharedMonsterAttributes.MAX_HEALTH, 1, Operation.ADDITION, 3);
+		register(reg, "hearty", SharedMonsterAttributes.MAX_HEALTH, 2, Operation.ADDITION, 1);
+		register(reg, "hard", SharedMonsterAttributes.ARMOR, 1, Operation.ADDITION, 3);
+		register(reg, "guarding", SharedMonsterAttributes.ARMOR, 1.5, Operation.ADDITION, 2);
+		register(reg, "armored", SharedMonsterAttributes.ARMOR, 2, Operation.ADDITION, 1);
+		register(reg, "warding", SharedMonsterAttributes.ARMOR_TOUGHNESS, 1, Operation.ADDITION, 2);
+		register(reg, "jagged", SharedMonsterAttributes.ATTACK_DAMAGE, 0.02, Operation.MULTIPLY_TOTAL, 2);
+		register(reg, "spiked", SharedMonsterAttributes.ATTACK_DAMAGE, 0.04, Operation.MULTIPLY_TOTAL, 2);
+		register(reg, "angry", SharedMonsterAttributes.ATTACK_DAMAGE, 0.06, Operation.MULTIPLY_TOTAL, 1);
+		register(reg, "menacing", SharedMonsterAttributes.ATTACK_DAMAGE, 0.08, Operation.MULTIPLY_TOTAL, 1);
+		register(reg, "brisk", SharedMonsterAttributes.MOVEMENT_SPEED, 0.01, Operation.MULTIPLY_TOTAL, 2);
+		register(reg, "fleeting", SharedMonsterAttributes.MOVEMENT_SPEED, 0.02, Operation.MULTIPLY_TOTAL, 2);
+		register(reg, "hasty", SharedMonsterAttributes.MOVEMENT_SPEED, 0.03, Operation.MULTIPLY_TOTAL, 1);
+		register(reg, "quick", SharedMonsterAttributes.MOVEMENT_SPEED, 0.04, Operation.MULTIPLY_TOTAL, 1);
+		register(reg, "wild", SharedMonsterAttributes.ATTACK_SPEED, 0.02, Operation.MULTIPLY_TOTAL, 2);
+		register(reg, "rash", SharedMonsterAttributes.ATTACK_SPEED, 0.04, Operation.MULTIPLY_TOTAL, 2);
+		register(reg, "intrepid", SharedMonsterAttributes.ATTACK_SPEED, 0.06, Operation.MULTIPLY_TOTAL, 1);
+		register(reg, "violent", SharedMonsterAttributes.ATTACK_SPEED, 0.08, Operation.MULTIPLY_TOTAL, 1);
 	}
 }
