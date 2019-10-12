@@ -1,5 +1,6 @@
 package cursedflames.modifiers.common.modifier.curio;
 
+import cursedflames.modifiers.common.ModifierHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,15 +19,19 @@ import top.theillusivec4.curios.api.event.LivingCurioChangeEvent;
 public class EventHandlerCurio {
 	@SubscribeEvent
 	public static void onCurioChange(LivingCurioChangeEvent event) {
-//		PlayerEntity player, ItemStack stack, String identifier, int slot
+		// TODO might also want to call removeModifier on player leave? in case of missing modifiers
 		LivingEntity entity = event.getEntityLiving();
 		ItemStack from = event.getFrom();
 		ItemStack to = event.getTo();
-		ModifierHandlerCurio.genCurioModifier(to); // does nothing if it already has a modifier
 		String identifier = event.getTypeIdentifier();
 		int slot = event.getSlotIndex();
+		
 		IModifierCurio modFrom = ModifierHandlerCurio.getCurioModifier(from);
-		IModifierCurio modTo = ModifierHandlerCurio.getCurioModifier(to);
+		IModifierCurio modTo = null;
+		if (ModifierHandler.allowModifierInSlot(identifier)) {
+			ModifierHandlerCurio.genCurioModifier(to); // does nothing if it already has a modifier
+			modTo = ModifierHandlerCurio.getCurioModifier(to);
+		}
 		if (modFrom != null) {
 //			ModifiersMod.logger.info(modFrom);
 			modFrom.removeModifier(entity, from, identifier, slot);
@@ -41,6 +46,7 @@ public class EventHandlerCurio {
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void onTooltip(ItemTooltipEvent event) {
+		// TODO indicate valid slots and whether active
 		ItemStack stack = event.getItemStack();
 		IModifierCurio mod = ModifierHandlerCurio.getCurioModifier(stack);
 		if (mod != null && mod != ModifierCurioRegistry.NONE) {
@@ -79,7 +85,7 @@ public class EventHandlerCurio {
 ////			ModifiersMod.logger.info("found item " + stack.getItem().getName());
 //			Item item = stack.getItem();
 //			Set<String> tags = CuriosAPI.getCurioTags(stack.getItem());
-//			
+//			// TODO do check against slot type
 //			if (!tags.isEmpty()) {
 //				ModifiersMod.logger.info("has tag");
 //				ModifierHandlerCurio.genCurioModifier(stack);

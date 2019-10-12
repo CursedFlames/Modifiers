@@ -23,8 +23,7 @@ public class EventHandler {
 			return;
 		ModifiersMod.logger.info("acceptible.");
 		if (right.getItem() == ModItems.modifier_book_curio) {
-			Set<String> tags = CuriosAPI.getCurioTags(left.getItem());
-			if (tags.isEmpty())
+			if (!ModifierHandler.canHaveCurioModifier(left))
 				return;
 			ItemStack output = left.copy();
 			CompoundNBT tag = output.getOrCreateTag();
