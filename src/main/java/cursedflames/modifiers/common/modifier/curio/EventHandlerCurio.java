@@ -1,6 +1,7 @@
 package cursedflames.modifiers.common.modifier.curio;
 
 import cursedflames.modifiers.common.ModifierHandler;
+import cursedflames.modifiers.common.ModifiersMod;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -25,20 +26,32 @@ public class EventHandlerCurio {
 		ItemStack to = event.getTo();
 		String identifier = event.getTypeIdentifier();
 		int slot = event.getSlotIndex();
+
+		if (from.hasTag() && from.getTag().contains("modState")) {
+//			ModifiersMod.logger.info("ASDFQWERT");
+			from.getTag().putInt("modState", 0);
+			from.getTag().remove("modState");
+		}
 		
 		IModifierCurio modFrom = ModifierHandlerCurio.getCurioModifier(from);
-		IModifierCurio modTo = null;
-		if (ModifierHandler.allowModifierInSlot(identifier)) {
+		boolean allowInSlot = ModifierHandler.allowModifierInSlot(identifier);
+		if (allowInSlot) {
 			ModifierHandlerCurio.genCurioModifier(to); // does nothing if it already has a modifier
-			modTo = ModifierHandlerCurio.getCurioModifier(to);
 		}
+		IModifierCurio modTo = ModifierHandlerCurio.getCurioModifier(to);
+		
 		if (modFrom != null) {
 //			ModifiersMod.logger.info(modFrom);
 			modFrom.removeModifier(entity, from, identifier, slot);
 		}
 		if (modTo != null) {
-//			ModifiersMod.logger.info(modTo);
-			modTo.applyModifier(entity, to, identifier, slot);
+			if (allowInSlot) {
+//				ModifiersMod.logger.info(modTo);
+				modTo.applyModifier(entity, to, identifier, slot);
+//				to.getTag().putInt("modState", 2);
+			} else {
+//				to.getTag().putInt("modState", 1);
+			}
 		}
 		
 	}
@@ -51,30 +64,38 @@ public class EventHandlerCurio {
 		IModifierCurio mod = ModifierHandlerCurio.getCurioModifier(stack);
 		if (mod != null && mod != ModifierCurioRegistry.NONE) {
 			ResourceLocation loc = mod.getRegistryName();
-			event.getToolTip().add(new TranslationTextComponent(
+			ITextComponent modInfo = new TranslationTextComponent(
 					ModifierHandlerCurio.getInfoTranslationKey(mod))
-					.setStyle(new Style().setColor(TextFormatting.BLUE)));
+					.setStyle(new Style().setColor(TextFormatting.BLUE));
+			int modState = stack.getTag().getInt("modState");
+			if (modState != 0) {
+				modInfo.appendSibling(new StringTextComponent(" ["));
+				if (modState == 1) {
+					modInfo.appendSibling(new TranslationTextComponent(
+							ModifiersMod.MODID+".curio.wrong_slot")
+							.setStyle(new Style().setColor(TextFormatting.RED)));
+				} else {
+					modInfo.appendSibling(new TranslationTextComponent(
+							ModifiersMod.MODID+".curio.active")
+							.setStyle(new Style().setColor(TextFormatting.GREEN)));
+				}
+				modInfo.appendSibling(new StringTextComponent("]"));
+			}
+			event.getToolTip().add(modInfo);
 			
 			ITextComponent name = event.getToolTip().get(0);
 			TranslationTextComponent prefix = new TranslationTextComponent(
 					ModifierHandlerCurio.getTranslationKey(mod));
 			prefix.setStyle(name.getStyle().createDeepCopy());
 			prefix.appendSibling(new StringTextComponent(" ")).appendSibling(name);
-//			String colorCode = "";
-//			while (name.length()>1&&name.charAt(0)=='\u00A7') {
-//				colorCode += name.substring(0, 2);
-//				name = name.substring(2);
-//			}
-////			if (colorCode.length() == 0) {
-////				colorCode = "\u00A70";
-////			}
+			
 			event.getToolTip().set(0, prefix);
 		}
 		// you better not ever leave this uncommented in builds, future self
-//		CompoundNBT tag = stack.getTag();
-//		if (tag != null) {
-//			event.getToolTip().add(new StringTextComponent(tag.toString()));
-//		}
+		CompoundNBT tag = stack.getTag();
+		if (tag != null) {
+			event.getToolTip().add(new StringTextComponent(tag.toString()));
+		}
 	}
 	// disabled due to issues with items in JEI and creative tabs
 //	@SubscribeEvent(priority=EventPriority.LOW)

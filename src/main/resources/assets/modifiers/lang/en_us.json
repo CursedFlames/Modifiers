@@ -5,6 +5,8 @@
 	"item.modifiers.modifier_book_curio.tooltip.1": "§dOnly available in creative mode.",
 	"itemGroup.modifiers_tool": "Tool Modifiers",
 	"item.modifiers.modifier_book_tool": "Tool Modifier",
+	"modifiers.curio.wrong_slot": "not enabled for slot type",
+	"modifiers.curio.active": "active",
 	"modifiers.modifier_curio.none": "None",
 	"modifiers.modifier_curio.none.info": "No modifier",
 	"modifiers.modifier_curio.half_hearted": "Half-hearted",
