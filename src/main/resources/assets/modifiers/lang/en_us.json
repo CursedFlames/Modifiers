@@ -44,5 +44,9 @@
 	"modifiers.modifier_curio.intrepid": "Intrepid",
 	"modifiers.modifier_curio.intrepid.info": "Intrepid: +6% attack speed",
 	"modifiers.modifier_curio.violent": "Violent",
-	"modifiers.modifier_curio.violent.info": "Violent: +8% attack speed"
+	"modifiers.modifier_curio.violent.info": "Violent: +8% attack speed",
+    "modifiers.gui.reforger.reforge": "Reforge",
+    "modifiers.gui.reforger.xpcost": "XP Cost:",
+    "modifiers.gui.reforger.levels": "(%s levels)",
+    "modifiers.gui.reforger.levels.override.1": "(%s level)"
 }

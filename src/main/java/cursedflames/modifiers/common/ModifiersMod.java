@@ -11,11 +11,21 @@ import cursedflames.modifiers.common.modifier.EventHandler;
 import cursedflames.modifiers.common.modifier.curio.EventHandlerCurio;
 import cursedflames.modifiers.common.modifier.curio.IModifierCurio;
 import cursedflames.modifiers.common.modifier.curio.ModifierCurioRegistry;
+import cursedflames.modifiers.common.network.PacketHandler;
+import cursedflames.modifiers.common.proxy.ClientProxy;
+import cursedflames.modifiers.common.proxy.IProxy;
+import cursedflames.modifiers.common.proxy.ServerProxy;
+import cursedflames.modifiers.common.reforge.ContainerReforge;
+import cursedflames.modifiers.common.reforge.EventHandlerReforger;
 import net.minecraft.block.Blocks;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -37,6 +47,10 @@ public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 
 	// Directly reference a log4j logger.
 	public static final Logger logger = LogManager.getLogger();
+	
+	public static IProxy proxy = DistExecutor.runForDist(
+			() -> () -> new ClientProxy(),
+			() -> () -> new ServerProxy());
 
 	public ModifiersMod() {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
@@ -60,10 +74,14 @@ public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 		MinecraftForge.EVENT_BUS.register(this);
 //		MinecraftForge.EVENT_BUS.register(ModifierCurioRegistry.class);
 		MinecraftForge.EVENT_BUS.register(EventHandler.class);
+		MinecraftForge.EVENT_BUS.register(EventHandlerReforger.class);
 		MinecraftForge.EVENT_BUS.register(EventHandlerCurio.class);
+		
+		PacketHandler.registerMessages(); // TODO where are we supposed to do this?
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
+		proxy.init(event);
 		// some preinit code
 		logger.info("HELLO FROM PREINIT");
 		logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
@@ -119,6 +137,14 @@ public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 		@SubscribeEvent
 		public static void onItemRegistry(final RegistryEvent.Register<Item> event) {
 			ModItems.registerItems(event);
+		}
+		
+		@SubscribeEvent
+		public static void onContainerRegistry(final RegistryEvent.Register<ContainerType<?>> event) {
+			event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+				BlockPos pos = data.readBlockPos();
+				return new ContainerReforge(windowId, proxy.getClientWorld(), pos, inv, proxy.getClientPlayer());
+			}).setRegistryName(MODID, "reforge"));
 		}
 		
 		@SubscribeEvent

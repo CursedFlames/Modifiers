@@ -10,9 +10,13 @@ import net.minecraft.util.ResourceLocation;
 public class ModifierHandlerCurio {
 	private static final Random RANDOM = new Random();
 	
+	public static String getModifierTranslationKey(ResourceLocation modifier) {
+		return modifier.getNamespace()+".modifier_curio."+modifier.getPath();
+	}
+	
 	public static String getTranslationKey(IModifierCurio modifier) {
 		ResourceLocation loc = modifier.getRegistryName();
-		return loc.getNamespace()+".modifier_curio."+loc.getPath();
+		return getModifierTranslationKey(loc);
 	}
 	
 	public static String getInfoTranslationKey(IModifierCurio modifier) {
@@ -28,10 +32,14 @@ public class ModifierHandlerCurio {
 	}
 	
 	public static void genCurioModifier(ItemStack stack) {
+		genCurioModifier(stack, false);
+	}
+
+	public static void genCurioModifier(ItemStack stack, boolean overwrite) {
 		CompoundNBT tag = stack.getOrCreateTag();
 		// FIXME add chance of no modifier
 		// FIXME allow force generation (e.g. reforge)
-		if (tag.contains("curioMod")) return;
+		if (!overwrite && tag.contains("curioMod")) return;
 		IModifierCurio newModifier = selectModifier(stack);
 		tag.putString("curioMod", newModifier.getRegistryName().toString());
 	}
