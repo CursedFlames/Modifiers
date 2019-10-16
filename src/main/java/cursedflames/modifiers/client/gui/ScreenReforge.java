@@ -45,7 +45,7 @@ public class ScreenReforge extends ContainerScreen<ContainerReforge> {
 				new IPressable() {
 					@Override
 					public void onPress(Button p_onPress_1_) {
-						ModifiersMod.logger.info("button press");
+//						ModifiersMod.logger.info("button press");
 //						CompoundNBT tag = new CompoundNBT();
 //						tag.setTag("pos", Util.blockPosToNBT(container.stationPos));
 //						PacketHandler.INSTANCE

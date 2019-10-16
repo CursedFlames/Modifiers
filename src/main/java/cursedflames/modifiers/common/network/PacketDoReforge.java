@@ -27,10 +27,10 @@ public class PacketDoReforge {
 			// Work that needs to be threadsafe (most work)
 			ServerPlayerEntity sender = ctx.get().getSender(); // the client that sent this packet
 			// do stuff
-			ModifiersMod.logger.info(sender);
+//			ModifiersMod.logger.info(sender);
 			Container cont = sender.openContainer;
 			if (cont instanceof ContainerReforge) {
-				ModifiersMod.logger.info("reforger");
+//				ModifiersMod.logger.info("reforger");
 				((ContainerReforge) cont).tryDoReforge();
 			}
 			

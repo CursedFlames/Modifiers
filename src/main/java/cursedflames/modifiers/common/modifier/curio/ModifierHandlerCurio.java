@@ -38,7 +38,6 @@ public class ModifierHandlerCurio {
 	public static void genCurioModifier(ItemStack stack, boolean overwrite) {
 		CompoundNBT tag = stack.getOrCreateTag();
 		// FIXME add chance of no modifier
-		// FIXME allow force generation (e.g. reforge)
 		if (!overwrite && tag.contains("curioMod")) return;
 		IModifierCurio newModifier = selectModifier(stack);
 		tag.putString("curioMod", newModifier.getRegistryName().toString());
@@ -46,7 +45,7 @@ public class ModifierHandlerCurio {
 	
 	private static int getTotalWeight() {
 		int total = 0;
-		ModifiersMod.logger.info(ModifierCurioRegistry.MODIFIERS_CURIO);
+//		ModifiersMod.logger.info(ModifierCurioRegistry.MODIFIERS_CURIO);
 		for (IModifierCurio mod : ModifierCurioRegistry.MODIFIERS_CURIO) {
 			if (mod == null) continue; //shouldn't happen
 			total += Math.max(0, mod.getWeight());

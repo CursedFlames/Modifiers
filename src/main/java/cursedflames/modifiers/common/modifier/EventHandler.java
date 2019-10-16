@@ -14,14 +14,14 @@ import top.theillusivec4.curios.api.CuriosAPI;
 public class EventHandler {
 	@SubscribeEvent
 	public static void onAnvilUpdate(AnvilUpdateEvent event) {
-		ModifiersMod.logger.info("AnvilUpdate");
+//		ModifiersMod.logger.info("AnvilUpdate");
 		ItemStack left = event.getLeft();
 		ItemStack right = event.getRight();
 		if (!ModifierHandler.canHaveModifier(left))
 			return;
 		if (!right.hasTag())
 			return;
-		ModifiersMod.logger.info("acceptible.");
+//		ModifiersMod.logger.info("acceptible.");
 		if (right.getItem() == ModItems.modifier_book_curio) {
 			if (!ModifierHandler.canHaveCurioModifier(left))
 				return;
@@ -31,7 +31,7 @@ public class EventHandler {
 			event.setOutput(output);
 			event.setMaterialCost(1);
 			event.setCost(1); // Minecraft doesn't like free anvil recipes apparently
-			ModifiersMod.logger.info("set output");
+//			ModifiersMod.logger.info("set output");
 		} else if (right.getItem() == ModItems.modifier_book_tool) {
 			Set<String> tags = CuriosAPI.getCurioTags(left.getItem());
 			if (!tags.isEmpty()) // don't allow non-curio mods on curios

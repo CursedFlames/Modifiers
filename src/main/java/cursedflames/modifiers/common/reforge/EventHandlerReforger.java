@@ -32,7 +32,7 @@ public class EventHandlerReforger {
 			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 			if (block == Blocks.SMITHING_TABLE) {
-				ModifiersMod.logger.info("smithing table clicked");
+//				ModifiersMod.logger.info("smithing table clicked");
 				event.setCanceled(true);
 				if (!world.isRemote) {
 					INamedContainerProvider containerProvider = new INamedContainerProvider() {

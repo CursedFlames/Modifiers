@@ -23,7 +23,7 @@ public class ModifierCurioRegistry {
 	public static IForgeRegistry<IModifierCurio> MODIFIERS_CURIO = null;
 	
 	public static void createRegistry(RegistryEvent.NewRegistry event) {
-		ModifiersMod.logger.info("CREATING REGISTRY. QWERT");
+		ModifiersMod.logger.info("Creating Curio Modifier Registry");
 		MODIFIERS_CURIO = new RegistryBuilder<IModifierCurio>()
 				.setName(new ResourceLocation(ModifiersMod.MODID, "modifiers_curio"))
 				.setType(IModifierCurio.class).setIDRange(0, Integer.MAX_VALUE-1).create();
@@ -40,7 +40,7 @@ public class ModifierCurioRegistry {
 	}
 	
 	public static void registerCurioModifiers(RegistryEvent.Register<IModifierCurio> event) {
-		ModifiersMod.logger.info("registering modifiers HJKL");
+		ModifiersMod.logger.info("Registering Curio Modifiers");
 		IForgeRegistry<IModifierCurio> reg = event.getRegistry();
 		reg.register(NONE = new ModifierNone().setRegistryName(new ResourceLocation(ModifiersMod.MODID, "none")));
 		//+10x speed is a good way to make sure it's working. :P

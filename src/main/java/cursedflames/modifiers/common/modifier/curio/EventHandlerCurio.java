@@ -92,10 +92,11 @@ public class EventHandlerCurio {
 			event.getToolTip().set(0, prefix);
 		}
 		// you better not ever leave this uncommented in builds, future self
-		CompoundNBT tag = stack.getTag();
-		if (tag != null) {
-			event.getToolTip().add(new StringTextComponent(tag.toString()));
-		}
+		// FIXME testing only
+//		CompoundNBT tag = stack.getTag();
+//		if (tag != null) {
+//			event.getToolTip().add(new StringTextComponent(tag.toString()));
+//		}
 	}
 	// disabled due to issues with items in JEI and creative tabs
 //	@SubscribeEvent(priority=EventPriority.LOW)

@@ -179,7 +179,7 @@ public class ContainerReforge extends Container {
 				if (tag.contains("reforgeCost")) {
 					xpCost = tag.getInt("reforgeCost");
 				} else {
-					ModifiersMod.logger.info("warning: item didn't have reforgeCost");
+//					ModifiersMod.logger.info("warning: item didn't have reforgeCost");
 					return;
 				}
 				 // TODO do we still need this, and is it still accurate in 1.14

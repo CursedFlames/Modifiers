@@ -1,7 +1,5 @@
 package cursedflames.modifiers.common;
 
-import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +15,6 @@ import cursedflames.modifiers.common.proxy.IProxy;
 import cursedflames.modifiers.common.proxy.ServerProxy;
 import cursedflames.modifiers.common.reforge.ContainerReforge;
 import cursedflames.modifiers.common.reforge.EventHandlerReforger;
-import net.minecraft.block.Blocks;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +23,6 @@ import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -37,8 +33,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import top.theillusivec4.curios.api.CuriosAPI;
-import top.theillusivec4.curios.api.imc.CurioIMCMessage;
 
 //The value here should match an entry in the META-INF/mods.toml file
 @Mod(ModifiersMod.MODID)
@@ -83,50 +77,44 @@ public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 	private void setup(final FMLCommonSetupEvent event) {
 		proxy.init(event);
 		// some preinit code
-		logger.info("HELLO FROM PREINIT");
-		logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+//		logger.info("HELLO FROM PREINIT");
+//		logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
 	}
 	
 	private void registerRegistries(final RegistryEvent.NewRegistry event) {
-		logger.info("ASDFASDF");
 		ModifierCurioRegistry.createRegistry(event);
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		// do something that can only be done on the client
-		logger.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
+//		logger.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {
 		// some example code to dispatch IMC to another mod
-		InterModComms.sendTo("examplemod", "helloworld", () -> {
-			logger.info("Hello world from the MDK");
-			return "Hello world";
-		});
-		// FIXME REMOVE TESTING
-		String[] slots = {"necklace", "head"};
-		// idk if there's a way to register multiple with one message
-		for (String slot : slots) {
-			InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> {
-				return new CurioIMCMessage(slot);
-			});
-		}
-		InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> {
-			return new CurioIMCMessage("ring").setSize(2);
-		});
+		// FIXME testing only
+//		String[] slots = {"necklace", "head"};
+//		// idk if there's a way to register multiple with one message
+//		for (String slot : slots) {
+//			InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> {
+//				return new CurioIMCMessage(slot);
+//			});
+//		}
+//		InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> {
+//			return new CurioIMCMessage("ring").setSize(2);
+//		});
 	}
 
 	private void processIMC(final InterModProcessEvent event) {
 		// some example code to receive and process InterModComms from other mods
-		logger.info("Got IMC {}",
-				event.getIMCStream().map(m -> m.getMessageSupplier().get()).collect(Collectors.toList()));
+//		logger.info("Got IMC {}",
+//				event.getIMCStream().map(m -> m.getMessageSupplier().get()).collect(Collectors.toList()));
 	}
 
 	// You can use SubscribeEvent and let the Event Bus discover methods to call
 	@SubscribeEvent
 	public void onServerStarting(FMLServerStartingEvent event) {
 		// do something when the server starts
-		logger.info("HELLO from server starting");
 	}
 
 	// You can use EventBusSubscriber to automatically subscribe events on the
