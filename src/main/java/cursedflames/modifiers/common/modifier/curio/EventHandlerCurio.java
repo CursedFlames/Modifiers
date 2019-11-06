@@ -2,6 +2,8 @@ package cursedflames.modifiers.common.modifier.curio;
 
 import cursedflames.modifiers.common.ModifierHandler;
 import cursedflames.modifiers.common.ModifiersMod;
+import cursedflames.modifiers.common.modifier.Modifier;
+import cursedflames.modifiers.common.modifier.Modifiers;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,12 +35,12 @@ public class EventHandlerCurio {
 			from.getTag().remove("modState");
 		}
 		
-		IModifierCurio modFrom = ModifierHandlerCurio.getCurioModifier(from);
+		Modifier modFrom = ModifierHandlerCurio.getCurioModifier(from);
 		boolean allowInSlot = ModifierHandler.allowModifierInSlot(identifier);
 		if (allowInSlot) {
 			ModifierHandlerCurio.genCurioModifier(to); // does nothing if it already has a modifier
 		}
-		IModifierCurio modTo = ModifierHandlerCurio.getCurioModifier(to);
+		Modifier modTo = ModifierHandlerCurio.getCurioModifier(to);
 		
 		if (modFrom != null) {
 //			ModifiersMod.logger.info(modFrom);
@@ -61,9 +63,9 @@ public class EventHandlerCurio {
 	public static void onTooltip(ItemTooltipEvent event) {
 		// TODO indicate valid slots and whether active
 		ItemStack stack = event.getItemStack();
-		IModifierCurio mod = ModifierHandlerCurio.getCurioModifier(stack);
-		if (mod != null && mod != ModifierCurioRegistry.NONE) {
-			ResourceLocation loc = mod.getRegistryName();
+		Modifier mod = ModifierHandlerCurio.getCurioModifier(stack);
+		if (mod != null && mod != Modifiers.NONE) {
+			ResourceLocation loc = mod.name;
 			ITextComponent modInfo = new TranslationTextComponent(
 					ModifierHandlerCurio.getInfoTranslationKey(mod))
 					.setStyle(new Style().setColor(TextFormatting.BLUE));
@@ -93,10 +95,10 @@ public class EventHandlerCurio {
 		}
 		// you better not ever leave this uncommented in builds, future self
 		// FIXME testing only
-//		CompoundNBT tag = stack.getTag();
-//		if (tag != null) {
-//			event.getToolTip().add(new StringTextComponent(tag.toString()));
-//		}
+		CompoundNBT tag = stack.getTag();
+		if (tag != null) {
+			event.getToolTip().add(new StringTextComponent(tag.toString()));
+		}
 	}
 	// disabled due to issues with items in JEI and creative tabs
 //	@SubscribeEvent(priority=EventPriority.LOW)

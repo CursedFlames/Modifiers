@@ -4,16 +4,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface IModifierCurio extends IForgeRegistryEntry<IModifierCurio> {
-	//TODO canApply(ItemStack)?
-	/**
-	 * @return a weight value used when generating or rerolling modifiers.
-	 *         Higher weights mean a modifier is more likely to appear, and a
-	 *         weight of 0 will never appear. (The "None" modifier is special
-	 *         cased to appear regardless of weight)
-	 */
-	public int getWeight();
-
+public interface IModifierEffect extends IForgeRegistryEntry<IModifierEffect> {
 	/**
 	 * note: does not guarantee that the modifier is not currently applied.
 	 * 

@@ -1,14 +1,13 @@
 package cursedflames.modifiers.common.item;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 import cursedflames.modifiers.common.ModifiersMod;
-import cursedflames.modifiers.common.modifier.curio.IModifierCurio;
-import cursedflames.modifiers.common.modifier.curio.ModifierCurioRegistry;
+import cursedflames.modifiers.common.modifier.Modifier;
+import cursedflames.modifiers.common.modifier.Modifiers;
 import cursedflames.modifiers.common.modifier.curio.ModifierHandlerCurio;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -24,7 +23,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class ModItems { // TODO update book textures to match 1.14 textures
 	public static Item modifier_book_curio;
@@ -54,7 +52,7 @@ public class ModItems { // TODO update book textures to match 1.14 textures
 				ITextComponent base = super.getDisplayName(stack);
 				if (!stack.hasTag() || !stack.getTag().contains("bookMod"))
 					return base;
-				IModifierCurio mod = ModifierCurioRegistry.MODIFIERS_CURIO.getValue(
+				Modifier mod = Modifiers.modifiers.get(
 						new ResourceLocation(stack.getTag().getString("bookMod")));
 				if (mod == null)
 					return base;
@@ -68,7 +66,7 @@ public class ModItems { // TODO update book textures to match 1.14 textures
 					List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 				if (!stack.hasTag() || !stack.getTag().contains("bookMod"))
 					return;
-				IModifierCurio mod = ModifierCurioRegistry.MODIFIERS_CURIO.getValue(
+				Modifier mod = Modifiers.modifiers.get(
 						new ResourceLocation(stack.getTag().getString("bookMod")));
 				if (mod == null)
 					return;
@@ -80,10 +78,10 @@ public class ModItems { // TODO update book textures to match 1.14 textures
 			@Override
 			protected List<ItemStack> getStacks() {
 				List<ItemStack> stacks = new ArrayList<>();
-				for (IModifierCurio mod : ModifierCurioRegistry.MODIFIERS_CURIO) {
+				for (Modifier mod : Modifiers.modifiers.values()) {
 					ItemStack stack = new ItemStack(this);
 					CompoundNBT tag = stack.getOrCreateTag();
-					tag.putString("bookMod", mod.getRegistryName().toString());
+					tag.putString("bookMod", mod.name.toString());
 					stacks.add(stack);
 				}
 				return stacks;

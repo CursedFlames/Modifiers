@@ -6,9 +6,8 @@ import org.apache.logging.log4j.Logger;
 import cursedflames.modifiers.common.config.Config;
 import cursedflames.modifiers.common.item.ModItems;
 import cursedflames.modifiers.common.modifier.EventHandler;
+import cursedflames.modifiers.common.modifier.Modifiers;
 import cursedflames.modifiers.common.modifier.curio.EventHandlerCurio;
-import cursedflames.modifiers.common.modifier.curio.IModifierCurio;
-import cursedflames.modifiers.common.modifier.curio.ModifierCurioRegistry;
 import cursedflames.modifiers.common.network.PacketHandler;
 import cursedflames.modifiers.common.proxy.ClientProxy;
 import cursedflames.modifiers.common.proxy.IProxy;
@@ -23,6 +22,7 @@ import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -33,6 +33,8 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import top.theillusivec4.curios.api.CuriosAPI;
+import top.theillusivec4.curios.api.imc.CurioIMCMessage;
 
 //The value here should match an entry in the META-INF/mods.toml file
 @Mod(ModifiersMod.MODID)
@@ -58,7 +60,7 @@ public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		// Register the doClientStuff method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerRegistries);
+//		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerRegistries);
 		
 		
 		Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID+"-client.toml"));
@@ -76,14 +78,12 @@ public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 
 	private void setup(final FMLCommonSetupEvent event) {
 		proxy.init(event);
-		// some preinit code
-//		logger.info("HELLO FROM PREINIT");
-//		logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+		Modifiers.init();
 	}
 	
-	private void registerRegistries(final RegistryEvent.NewRegistry event) {
-		ModifierCurioRegistry.createRegistry(event);
-	}
+//	private void registerRegistries(final RegistryEvent.NewRegistry event) {
+//		ModifierEffectRegistry.createRegistry(event);
+//	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		// do something that can only be done on the client
@@ -93,16 +93,16 @@ public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 	private void enqueueIMC(final InterModEnqueueEvent event) {
 		// some example code to dispatch IMC to another mod
 		// FIXME testing only
-//		String[] slots = {"necklace", "head"};
-//		// idk if there's a way to register multiple with one message
-//		for (String slot : slots) {
-//			InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> {
-//				return new CurioIMCMessage(slot);
-//			});
-//		}
-//		InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> {
-//			return new CurioIMCMessage("ring").setSize(2);
-//		});
+		String[] slots = {"necklace", "head"};
+		// idk if there's a way to register multiple with one message
+		for (String slot : slots) {
+			InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> {
+				return new CurioIMCMessage(slot);
+			});
+		}
+		InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> {
+			return new CurioIMCMessage("ring").setSize(2);
+		});
 	}
 
 	private void processIMC(final InterModProcessEvent event) {
@@ -135,9 +135,9 @@ public class ModifiersMod { //TODO ensure missing modifiers handled correctly
 			}).setRegistryName(MODID, "reforge"));
 		}
 		
-		@SubscribeEvent
-		public static void onModifierCurioRegistry(final RegistryEvent.Register<IModifierCurio> event) {
-			ModifierCurioRegistry.registerCurioModifiers(event);
-		}
+//		@SubscribeEvent
+//		public static void onModifierCurioRegistry(final RegistryEvent.Register<IModifierEffect> event) {
+//			ModifierEffectRegistry.registerCurioModifiers(event);
+//		}
 	}
 }
