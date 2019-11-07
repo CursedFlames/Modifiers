@@ -35,12 +35,12 @@ public class EventHandlerCurio {
 			from.getTag().remove("modState");
 		}
 		
-		Modifier modFrom = ModifierHandlerCurio.getCurioModifier(from);
+		Modifier modFrom = ModifierHandler.getCurioModifier(from);
 		boolean allowInSlot = ModifierHandler.allowModifierInSlot(identifier);
 		if (allowInSlot) {
-			ModifierHandlerCurio.genCurioModifier(to); // does nothing if it already has a modifier
+			ModifierHandler.genCurioModifier(to); // does nothing if it already has a modifier
 		}
-		Modifier modTo = ModifierHandlerCurio.getCurioModifier(to);
+		Modifier modTo = ModifierHandler.getCurioModifier(to);
 		
 		if (modFrom != null) {
 //			ModifiersMod.logger.info(modFrom);
@@ -63,11 +63,11 @@ public class EventHandlerCurio {
 	public static void onTooltip(ItemTooltipEvent event) {
 		// TODO indicate valid slots and whether active
 		ItemStack stack = event.getItemStack();
-		Modifier mod = ModifierHandlerCurio.getCurioModifier(stack);
+		Modifier mod = ModifierHandler.getCurioModifier(stack);
 		if (mod != null && mod != Modifiers.NONE) {
 			ResourceLocation loc = mod.name;
 			ITextComponent modInfo = new TranslationTextComponent(
-					ModifierHandlerCurio.getInfoTranslationKey(mod))
+					ModifierHandler.getInfoTranslationKey(mod))
 					.setStyle(new Style().setColor(TextFormatting.BLUE));
 			int modState = stack.getTag().getInt("modState");
 			if (modState != 0) {
@@ -87,7 +87,7 @@ public class EventHandlerCurio {
 			
 			ITextComponent name = event.getToolTip().get(0);
 			TranslationTextComponent prefix = new TranslationTextComponent(
-					ModifierHandlerCurio.getTranslationKey(mod));
+					ModifierHandler.getTranslationKey(mod));
 			prefix.setStyle(name.getStyle().createDeepCopy());
 			prefix.appendSibling(new StringTextComponent(" ")).appendSibling(name);
 			

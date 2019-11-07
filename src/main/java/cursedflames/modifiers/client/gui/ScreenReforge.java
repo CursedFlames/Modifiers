@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import cursedflames.modifiers.common.ModifierHandler;
 import cursedflames.modifiers.common.ModifiersMod;
 import cursedflames.modifiers.common.config.Config;
-import cursedflames.modifiers.common.modifier.curio.ModifierHandlerCurio;
 import cursedflames.modifiers.common.network.PacketDoReforge;
 import cursedflames.modifiers.common.network.PacketHandler;
 import cursedflames.modifiers.common.reforge.ContainerReforge;
@@ -67,13 +66,13 @@ public class ScreenReforge extends ContainerScreen<ContainerReforge> {
 		GlStateManager.translatef(guiLeft+4, guiTop+4, 0);
 		GlStateManager.disableLighting();
 		ItemStack stack = container.stackHandler.getStackInSlot(0);
-		if (stack.hasTag() && ModifierHandler.canHaveModifier(stack)
-				&& ((Config.REFORGE_CURIO_ENABLED.get() && ModifierHandler.canHaveCurioModifier(stack))
-						||(false/*TODO tool mods*/))) {
+		if (stack.hasTag() && ModifierHandler.canHaveModifier(stack)) {
+			// TODO check that there are modifiers available other than "none"
 			PlayerEntity player = Minecraft.getInstance().player;
 			int xp = XpUtil.getPlayerXP(player);
 			CompoundNBT tag = stack.getTag();
 			int xpCost = 0;
+			// FIXME handle no xpCost, and other lack of reforgability
 			if (tag.contains("reforgeCost"))
 				xpCost = tag.getInt("reforgeCost");
 			boolean inCreative = player.isCreative();
@@ -93,7 +92,7 @@ public class ScreenReforge extends ContainerScreen<ContainerReforge> {
 			if (tag.contains("curioMod")) {
 				ResourceLocation mod = new ResourceLocation(tag.getString("curioMod"));
 				font.drawSplitString(
-						I18n.format(ModifierHandlerCurio.getModifierTranslationKey(mod)),
+						I18n.format(ModifierHandler.getModifierTranslationKey(mod)),
 						0, 1+font.FONT_HEIGHT, 0xFFFFFF, 30);
 			}
 		}

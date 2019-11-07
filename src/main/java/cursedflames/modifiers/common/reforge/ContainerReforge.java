@@ -5,7 +5,6 @@ import java.util.Random;
 import cursedflames.modifiers.common.ModifierHandler;
 import cursedflames.modifiers.common.ModifiersMod;
 import cursedflames.modifiers.common.config.Config;
-import cursedflames.modifiers.common.modifier.curio.ModifierHandlerCurio;
 import cursedflames.modifiers.common.util.XpUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,11 +49,10 @@ public class ContainerReforge extends Container {
 		stackHandler = new ItemStackHandler() {
 			@Override
 			protected void onContentsChanged(int slot) {
-				ItemStack stack = this.getStackInSlot(slot);				
-				if (Config.REFORGE_CURIO_ENABLED.get()
-						&& ModifierHandler.canHaveCurioModifier(stack)) {
-					ModifierHandlerCurio.genCurioModifier(stack);
-					CompoundNBT tag = stack.getOrCreateTag();
+				ItemStack stack = this.getStackInSlot(slot);
+				ModifierHandler.genCurioModifier(stack);
+				if (stack.hasTag()) {
+					CompoundNBT tag = stack.getTag();
 					if (!tag.contains("reforgeCost")) {
 						tag.putInt("reforgeCost", getCurioReforgeCost(player.world.rand));
 					}
@@ -158,8 +156,8 @@ public class ContainerReforge extends Container {
 	}
 	
 	public static int getCurioReforgeCost(Random rand) {
-		int min = Config.REFORGE_COST_CURIO_MIN.get();
-		int max = Config.REFORGE_COST_CURIO_MAX.get();
+		int min = Config.REFORGE_COST_MIN.get();
+		int max = Config.REFORGE_COST_MAX.get();
 		if (min>max) {
 			int min_ = min;
 			min = max;
@@ -172,31 +170,22 @@ public class ContainerReforge extends Container {
 		ItemStack stack = stackHandler.getStackInSlot(0);
 		if (ModifierHandler.canHaveModifier(stack)) {
 			boolean creative = player.isCreative();
-			if (ModifierHandler.canHaveCurioModifier(stack)) {
-				if (!Config.REFORGE_CURIO_ENABLED.get()) return;
-				CompoundNBT tag = stack.getOrCreateTag();
-				int xpCost;
-				if (tag.contains("reforgeCost")) {
-					xpCost = tag.getInt("reforgeCost");
-				} else {
-//					ModifiersMod.logger.info("warning: item didn't have reforgeCost");
-					return;
+			if (!stack.hasTag()) return;
+			CompoundNBT tag = stack.getTag();
+			if (!tag.contains("reforgeCost")) return;
+			int xpCost = tag.getInt("reforgeCost");
+			 // TODO do we still need this, and is it still accurate in 1.14
+			int playerXp = XpUtil.getPlayerXP(player);
+			if (creative || playerXp >= xpCost) {
+				if (!creative) {
+					XpUtil.addPlayerXP(player, -xpCost);
 				}
-				 // TODO do we still need this, and is it still accurate in 1.14
-				int playerXp = XpUtil.getPlayerXP(player);
-				if (creative || playerXp >= xpCost) {
-					if (!creative) {
-						XpUtil.addPlayerXP(player, -xpCost);
-					}
-					ModifierHandlerCurio.genCurioModifier(stack, true);
-					tag.putInt("reforgeCost", getCurioReforgeCost(player.world.rand));
-					float vol = (float) (Math.random()*0.3+0.9);
-					float pitch = (float) (Math.random()*0.3+0.85);
-					player.world.playSound(null, stationPos, SoundEvents.BLOCK_ANVIL_USE,
-							SoundCategory.BLOCKS, vol, pitch);
-				}
-			} else {
-				// tool modifier
+				ModifierHandler.genCurioModifier(stack, true);
+				tag.putInt("reforgeCost", getCurioReforgeCost(player.world.rand));
+				float vol = (float) (Math.random()*0.3+0.9);
+				float pitch = (float) (Math.random()*0.3+0.85);
+				player.world.playSound(null, stationPos, SoundEvents.BLOCK_ANVIL_USE,
+						SoundCategory.BLOCKS, vol, pitch);
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package cursedflames.modifiers.common.modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -13,12 +14,18 @@ import cursedflames.modifiers.common.modifier.effect.EffectAttributeModifier;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class Modifiers {
 	public static Map<ResourceLocation, Modifier> modifiers = new HashMap<>();
 	public static final Modifier NONE = new Modifier(
-			new ResourceLocation(ModifiersMod.MODID, "none"), 0, new ArrayList<>());
+			new ResourceLocation(ModifiersMod.MODID, "none"), 0, new ArrayList<>()) {
+		@Override
+		public boolean canItemStackHaveModifier(ItemStack stack, Set<String> curioTags) {
+			return true; // Allow "none" modifier on any item
+		}
+	};
 	
 	private static void register(String name,
 			IAttribute attribute, double amount, Operation operation, int weight) {

@@ -2,7 +2,9 @@ package cursedflames.modifiers.common.modifier;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
+import cursedflames.modifiers.common.config.Config;
 import cursedflames.modifiers.common.modifier.curio.IModifierEffect;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -49,5 +51,19 @@ public class Modifier {
 		for (IModifierEffect effect : effects) {
 			effect.removeModifier(entity, stack, identifier, slot);
 		}
+	}
+	
+	public boolean canItemStackHaveModifier(ItemStack stack, Set<String> curioTags) {
+//		Set<String> tags = CuriosAPI.getCurioTags(stack.getItem());
+		if (curioTags.isEmpty())
+			return false;
+		List<String> curioVals = (List<String>) Config.CURIO_SLOTS_ALLOWED.get();
+		boolean whitelist = Config.CURIO_IS_WHITELIST.get();
+		for (String curioVal : curioVals) {
+			if (curioTags.contains(curioVal) == whitelist) { // (a && b) || (!a && !b)
+				return true;
+			}
+		}
+		return false;
 	}
 }

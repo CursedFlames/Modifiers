@@ -19,7 +19,6 @@ public class Config {
 	public static final String CATEGORY_REFORGE = "reforge";
 	
 	public static final String SUBCAT_CURIO = "curio";
-	public static final String SUBCAT_TOOLS = "tools";
 	
 	private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
 	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
@@ -32,14 +31,8 @@ public class Config {
 
 	public static ForgeConfigSpec.BooleanValue REFORGE_ENABLED;
 	
-	public static ForgeConfigSpec.BooleanValue REFORGE_CURIO_ENABLED;
-	public static ForgeConfigSpec.IntValue REFORGE_COST_CURIO_MIN;
-	public static ForgeConfigSpec.IntValue REFORGE_COST_CURIO_MAX;
-
-//	public static ForgeConfigSpec.BooleanValue REFORGE_TOOL_ENABLED;
-//	public static ForgeConfigSpec.IntValue REFORGE_COST_TOOL_MIN;
-//	public static ForgeConfigSpec.IntValue REFORGE_COST_TOOL_MAX;
-	
+	public static ForgeConfigSpec.IntValue REFORGE_COST_MIN;
+	public static ForgeConfigSpec.IntValue REFORGE_COST_MAX;
 
 	static {
 		COMMON_BUILDER.comment("General configuration").push(CATEGORY_GENERAL);
@@ -73,29 +66,12 @@ public class Config {
 						"If disabled, items will not be reforgeable")
 				.define("reforge_enabled", true);
 		
-		COMMON_BUILDER.comment("Curios").push(SUBCAT_CURIO);
-		REFORGE_CURIO_ENABLED = COMMON_BUILDER
-				.comment("Whether the reforger gui can reforge curios")
-				.define("reforge_enabled", true);
-		REFORGE_COST_CURIO_MIN = COMMON_BUILDER
-				.comment("Minimum cost, in XP points, to reforge a curio")
+		REFORGE_COST_MIN = COMMON_BUILDER
+				.comment("Minimum cost, in XP points, to reforge an item")
 				.defineInRange("reforge_cost_min", 80, 1, Integer.MAX_VALUE/100);
-		REFORGE_COST_CURIO_MAX = COMMON_BUILDER
-				.comment("Maximum cost, in XP points, to reforge a curio")
+		REFORGE_COST_MAX = COMMON_BUILDER
+				.comment("Maximum cost, in XP points, to reforge an item")
 				.defineInRange("reforge_cost_max", 160, 1, Integer.MAX_VALUE/100);
-		COMMON_BUILDER.pop();
-		
-//		COMMON_BUILDER.comment("Tools/Weapons").push(SUBCAT_TOOLS);
-//		REFORGE_TOOL_ENABLED = COMMON_BUILDER
-//				.comment("Whether the reforger gui can reforge tools/weapons")
-//				.define("reforge_enabled", true);
-//		REFORGE_COST_TOOL_MIN = COMMON_BUILDER
-//				.comment("Minimum cost, in XP points, to reforge a tool/weapon")
-//				.defineInRange("reforge_cost_min", 80, 1, Integer.MAX_VALUE/100);
-//		REFORGE_COST_TOOL_MAX = COMMON_BUILDER
-//				.comment("Maximum cost, in XP points, to reforge a tool/weapon")
-//				.defineInRange("reforge_cost_max", 160, 1, Integer.MAX_VALUE/100);
-//		COMMON_BUILDER.pop();
 	}
 
 	public static void loadConfig(ForgeConfigSpec spec, Path path) {
