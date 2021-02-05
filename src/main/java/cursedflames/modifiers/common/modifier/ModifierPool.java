@@ -24,6 +24,7 @@ public class ModifierPool {
 	}
 
 	public Modifier roll(Random random) {
+		if (totalWeight == 0 || modifiers.isEmpty()) return null;
 		int i = random.nextInt(totalWeight);
 		int j = 0;
 		for (Modifier modifier : modifiers) {

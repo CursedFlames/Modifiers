@@ -4,11 +4,13 @@
 	"compatibilityLevel": "JAVA_8",
 	"refmap": "modifiers.refmap.json",
 	"mixins": [
+		"MixinAnvilContainer",
 		"MixinItem",
 		"MixinLivingEntity",
 		"MixinSmithingTableContainer"
 	],
 	"client":[
+		"client.MixinContainerScreen",
 		"client.MixinItemStack"
 	],
 	"injectors": {

@@ -18,6 +18,7 @@ public class ModifierHandler {
 	public static final long COMMON_SEGMENT_CURIO = (0x7a6ca76cL) << 32;
 	public static final long COMMON_SEGMENT_EQUIPMENT = 0x9225d5c4fd8d434bL;
 	public static final String tagName = "itemModifier";
+	public static final String bookTagName = "bookModifier";
 
 	public static boolean canHaveModifiers(ItemStack stack) {
 		return !stack.isEmpty() && stack.getMaxStackSize() <= 1 /* && stack.getItem() != ModItems.modifier_book*/;
@@ -25,9 +26,12 @@ public class ModifierHandler {
 
 	@Nullable public static Modifier rollModifier(ItemStack stack, Random random) {
 		if (!canHaveModifiers(stack)) return null;
-		// TODO check all pools
+		// TODO if multiple pools applicable, roll between them
 		if (Modifiers.curio_pool.isApplicable.test(stack)) {
 			return Modifiers.curio_pool.roll(random);
+		}
+		if (Modifiers.tool_pool.isApplicable.test(stack)) {
+			return Modifiers.tool_pool.roll(random);
 		}
 		return null;
 	}
@@ -63,6 +67,9 @@ public class ModifierHandler {
 	}
 
 	public static void applyCurioModifier(LivingEntity entity, Modifier modifier, String slotIdentifier, int index) {
+		if (modifier.type == Modifier.ModifierType.HELD) {
+			return;
+		}
 		for (int i = 0; i < modifier.modifiers.size(); i++) {
 			Pair<Attribute, Modifier.AttributeModifierSupplier> entry = modifier.modifiers.get(i);
 			UUID id = getCurioUuid(slotIdentifier, index, i);
@@ -90,6 +97,10 @@ public class ModifierHandler {
 	}
 
 	public static void applyEquipmentModifier(LivingEntity entity, Modifier modifier, EquipmentSlotType type) {
+		if (modifier.type == Modifier.ModifierType.HELD && type.getSlotType() == EquipmentSlotType.Group.ARMOR
+				|| modifier.type == Modifier.ModifierType.EQUIPPED && type.getSlotType() == EquipmentSlotType.Group.HAND) {
+			return;
+		}
 		for (int i = 0; i < modifier.modifiers.size(); i++) {
 			Pair<Attribute, Modifier.AttributeModifierSupplier> entry = modifier.modifiers.get(i);
 			UUID id = getEquipmentUuid(type, i);

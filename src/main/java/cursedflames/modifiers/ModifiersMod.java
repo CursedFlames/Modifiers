@@ -1,11 +1,16 @@
 package cursedflames.modifiers;
 
-import net.minecraft.block.Block;
+import cursedflames.modifiers.common.curio.ICurioProxy;
+import cursedflames.modifiers.common.item.ItemModifierBook;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -17,7 +22,6 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
 
@@ -30,6 +34,19 @@ public class ModifiersMod {
 	public static final String MODID = "modifiers";
 
 	public static final Logger LOGGER = LogManager.getLogger();
+
+	public static ICurioProxy curioProxy;
+
+	public static ItemModifierBook modifier_book;
+
+	// TODO sort creative tab/JEI
+	public static final ItemGroup GROUP_BOOKS = new ItemGroup(ModifiersMod.MODID+"_books") {
+		@Override
+		@OnlyIn(Dist.CLIENT)
+		public ItemStack createIcon() {
+			return new ItemStack(modifier_book);
+		}
+	};
 
 	public ModifiersMod() {
 		// Register the setup method for modloading
@@ -47,11 +64,17 @@ public class ModifiersMod {
 		System.out.println(ModList.get().getMods());
 		if (ModList.get().isLoaded("curios")) {
 			try {
-				MinecraftForge.EVENT_BUS.register(Class.forName("cursedflames.modifiers.common.curio.EventHandlerCurio"));
-			} catch (ClassNotFoundException e) {
+				curioProxy = (ICurioProxy) Class.forName("cursedflames.modifiers.common.curio.CurioCompat").newInstance();
+				MinecraftForge.EVENT_BUS.register(curioProxy);
+			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException | ClassCastException e) {
 				e.printStackTrace();
+				// FIXME probably don't want this in non-debug releases
 				throw new Error();
 			}
+		}
+		if (curioProxy == null) {
+			// Dummy implementation that does nothing
+			curioProxy = new ICurioProxy() {};
 		}
 	}
 
@@ -88,9 +111,10 @@ public class ModifiersMod {
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class RegistryEvents {
 		@SubscribeEvent
-		public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-			// register a new block here
-
+		public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
+			modifier_book = new ItemModifierBook();
+			modifier_book.setRegistryName(new ResourceLocation(MODID, "modifier_book"));
+			event.getRegistry().register(modifier_book);
 		}
 	}
 }

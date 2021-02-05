@@ -2,30 +2,59 @@ package cursedflames.modifiers.common.modifier;
 
 import cursedflames.modifiers.ModifiersMod;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import static net.minecraft.entity.ai.attributes.AttributeModifier.Operation.*;
 
 public class Modifiers {
 	public static Map<ResourceLocation, Modifier> modifiers = new HashMap<>();
 
-	public static Modifier NONE = builder("none").setWeight(0).build();
-
-	public static ModifierPool curio_pool = new ModifierPool(stack -> {
-		// TODO check if curios loaded and item has curio tags
-		return true;
-	});
-
-	private static Modifier.ModifierBuilder builder(String name) {
-		return new Modifier.ModifierBuilder(new ResourceLocation(ModifiersMod.MODID, name), "modifier_" + name);
+	public static Modifier NONE = new Modifier.ModifierBuilder(new ResourceLocation(ModifiersMod.MODID, "none"), "modifier_none", Modifier.ModifierType.BOTH).setWeight(0).build();
+	static {
+		modifiers.put(NONE.name, NONE);
 	}
 
-	private static void curio(Modifier modifier) {
+	public static ModifierPool curio_pool = new ModifierPool(stack -> {
+		// TODO find a better way of determining if an item is armor
+		if (stack.getItem() instanceof ArmorItem) return true;
+		return ModifiersMod.curioProxy.isModifiableCurio(stack);
+	});
+
+	// TODO sub-pools for different weapon types? melee/ranged
+	public static ModifierPool tool_pool = new ModifierPool(stack -> {
+		// TODO find a better way of determining if an item is a tool
+		// TODO probably want modifiers on tridents and ranged weapons too
+		if (stack.getItem() instanceof SwordItem) return true;
+		return stack.getItem() instanceof ToolItem;
+	});
+
+	private static Modifier.ModifierBuilder curio(String name) {
+		return new Modifier.ModifierBuilder(new ResourceLocation(ModifiersMod.MODID, name), "modifier_" + name, Modifier.ModifierType.EQUIPPED);
+	}
+
+	private static Modifier.ModifierBuilder both(String name) {
+		return new Modifier.ModifierBuilder(new ResourceLocation(ModifiersMod.MODID, name), "modifier_" + name, Modifier.ModifierType.BOTH);
+	}
+
+	private static Modifier.ModifierBuilder tool(String name) {
+		return new Modifier.ModifierBuilder(new ResourceLocation(ModifiersMod.MODID, name), "modifier_" + name, Modifier.ModifierType.HELD);
+	}
+
+	private static void addCurio(Modifier modifier) {
 		modifiers.put(modifier.name, modifier);
 		curio_pool.add(modifier);
+	}
+
+	private static void addTool(Modifier modifier) {
+		modifiers.put(modifier.name, modifier);
+		tool_pool.add(modifier);
 	}
 
 	private static Modifier.AttributeModifierSupplier mod(double amount, Operation op) {
@@ -33,28 +62,83 @@ public class Modifiers {
 	}
 
 	public static void init() {
-		curio(builder("half_hearted").setWeight(300).addModifier(Attributes.MAX_HEALTH, mod(1, Operation.ADDITION)).build());
-		curio(builder("hearty").setWeight(100).addModifier(Attributes.MAX_HEALTH, mod(2, Operation.ADDITION)).build());
-		curio(builder("hard").setWeight(300).addModifier(Attributes.ARMOR, mod(1, Operation.ADDITION)).build());
-		curio(builder("guarding").setWeight(200).addModifier(Attributes.ARMOR, mod(1.5, Operation.ADDITION)).build());
-		curio(builder("armored").setWeight(100).addModifier(Attributes.ARMOR, mod(2, Operation.ADDITION)).build());
-		curio(builder("warding").setWeight(200).addModifier(Attributes.ARMOR_TOUGHNESS, mod(1, Operation.ADDITION)).build());
-		curio(builder("jagged").setWeight(200).addModifier(Attributes.ATTACK_DAMAGE, mod(0.02, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("spiked").setWeight(200).addModifier(Attributes.ATTACK_DAMAGE, mod(0.04, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("angry").setWeight(100).addModifier(Attributes.ATTACK_DAMAGE, mod(0.06, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("menacing").setWeight(100).addModifier(Attributes.ATTACK_DAMAGE, mod(0.08, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("brisk").setWeight(200).addModifier(Attributes.MOVEMENT_SPEED, mod(0.01, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("fleeting").setWeight(200).addModifier(Attributes.MOVEMENT_SPEED, mod(0.02, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("hasty").setWeight(100).addModifier(Attributes.MOVEMENT_SPEED, mod(0.03, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("quick").setWeight(100).addModifier(Attributes.MOVEMENT_SPEED, mod(0.04, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("wild").setWeight(200).addModifier(Attributes.ATTACK_SPEED, mod(0.02, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("rash").setWeight(200).addModifier(Attributes.ATTACK_SPEED, mod(0.04, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("intrepid").setWeight(100).addModifier(Attributes.ATTACK_SPEED, mod(0.06, Operation.MULTIPLY_TOTAL)).build());
-		curio(builder("violent").setWeight(100).addModifier(Attributes.ATTACK_SPEED, mod(0.08, Operation.MULTIPLY_TOTAL)).build());
+		addCurio(curio("half_hearted").setWeight(300).addModifier(Attributes.MAX_HEALTH, mod(1, ADDITION)).build());
+		addCurio(curio("hearty").setWeight(100).addModifier(Attributes.MAX_HEALTH, mod(2, ADDITION)).build());
+		addCurio(curio("hard").setWeight(300).addModifier(Attributes.ARMOR, mod(1, ADDITION)).build());
+		addCurio(curio("guarding").setWeight(200).addModifier(Attributes.ARMOR, mod(1.5, ADDITION)).build());
+		addCurio(curio("armored").setWeight(100).addModifier(Attributes.ARMOR, mod(2, ADDITION)).build());
+		addCurio(curio("warding").setWeight(200).addModifier(Attributes.ARMOR_TOUGHNESS, mod(1, ADDITION)).build());
+		addCurio(curio("jagged").setWeight(200).addModifier(Attributes.ATTACK_DAMAGE, mod(0.01, MULTIPLY_TOTAL)).build());
+		addCurio(curio("spiked").setWeight(200).addModifier(Attributes.ATTACK_DAMAGE, mod(0.02, MULTIPLY_TOTAL)).build());
+		addCurio(curio("angry").setWeight(100).addModifier(Attributes.ATTACK_DAMAGE, mod(0.03, MULTIPLY_TOTAL)).build());
+		addCurio(curio("menacing").setWeight(100).addModifier(Attributes.ATTACK_DAMAGE, mod(0.04, MULTIPLY_TOTAL)).build());
+		addCurio(curio("brisk").setWeight(200).addModifier(Attributes.MOVEMENT_SPEED, mod(0.01, MULTIPLY_TOTAL)).build());
+		addCurio(curio("fleeting").setWeight(200).addModifier(Attributes.MOVEMENT_SPEED, mod(0.02, MULTIPLY_TOTAL)).build());
+		addCurio(curio("hasty").setWeight(100).addModifier(Attributes.MOVEMENT_SPEED, mod(0.03, MULTIPLY_TOTAL)).build());
+		addCurio(curio("quick").setWeight(100).addModifier(Attributes.MOVEMENT_SPEED, mod(0.04, MULTIPLY_TOTAL)).build());
+		addCurio(curio("wild").setWeight(200).addModifier(Attributes.ATTACK_SPEED, mod(0.01, MULTIPLY_TOTAL)).build());
+		addCurio(curio("rash").setWeight(200).addModifier(Attributes.ATTACK_SPEED, mod(0.02, MULTIPLY_TOTAL)).build());
+		addCurio(curio("intrepid").setWeight(100).addModifier(Attributes.ATTACK_SPEED, mod(0.03, MULTIPLY_TOTAL)).build());
+		addCurio(curio("violent").setWeight(100).addModifier(Attributes.ATTACK_SPEED, mod(0.04, MULTIPLY_TOTAL)).build());
 		// FIXME remove this one before release
-		curio(builder("debug").setWeight(0)
-				.addModifier(Attributes.MAX_HEALTH, mod(1, Operation.ADDITION))
-				.addModifier(Attributes.MOVEMENT_SPEED, mod(2.0, Operation.MULTIPLY_BASE))
+		addCurio(both("debug").setWeight(0)
+				.addModifier(Attributes.MAX_HEALTH, mod(1, ADDITION))
+				.addModifier(Attributes.MOVEMENT_SPEED, mod(2.0, MULTIPLY_BASE))
+				.build());
+
+		addTool(tool("legendary").setWeight(50)
+				.addModifier(Attributes.ATTACK_DAMAGE, mod(0.15, MULTIPLY_TOTAL))
+				.addModifier(Attributes.ATTACK_SPEED, mod(0.1, MULTIPLY_TOTAL))
+				.addModifier(Attributes.MOVEMENT_SPEED, mod(0.05, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("deadly").setWeight(100)
+				.addModifier(Attributes.ATTACK_DAMAGE, mod(0.15, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("vicious").setWeight(100)
+				.addModifier(Attributes.ATTACK_DAMAGE, mod(0.1, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("sharp").setWeight(100)
+				.addModifier(Attributes.ATTACK_DAMAGE, mod(0.05, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("broken").setWeight(100)
+				.addModifier(Attributes.ATTACK_DAMAGE, mod(-0.2, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("damaged").setWeight(100)
+				.addModifier(Attributes.ATTACK_DAMAGE, mod(-0.1, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("agile").setWeight(100)
+				.addModifier(Attributes.ATTACK_SPEED, mod(0.05, MULTIPLY_TOTAL))
+				.addModifier(Attributes.MOVEMENT_SPEED, mod(0.1, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("swift").setWeight(100)
+				.addModifier(Attributes.ATTACK_SPEED, mod(0.1, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("sluggish").setWeight(100)
+				.addModifier(Attributes.ATTACK_SPEED, mod(-0.05, MULTIPLY_TOTAL))
+				.addModifier(Attributes.MOVEMENT_SPEED, mod(-0.1, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("slow").setWeight(100)
+				.addModifier(Attributes.ATTACK_SPEED, mod(-0.15, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("light").setWeight(100)
+				.addModifier(Attributes.ATTACK_DAMAGE, mod(-0.1, MULTIPLY_TOTAL))
+				.addModifier(Attributes.ATTACK_SPEED, mod(0.15, MULTIPLY_TOTAL))
+				.build());
+
+		addTool(tool("heavy").setWeight(100)
+				.addModifier(Attributes.ATTACK_DAMAGE, mod(0.2, MULTIPLY_TOTAL))
+				.addModifier(Attributes.ATTACK_SPEED, mod(-0.15, MULTIPLY_TOTAL))
+				.addModifier(Attributes.MOVEMENT_SPEED, mod(-0.05, MULTIPLY_TOTAL))
 				.build());
 	}
 

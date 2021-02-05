@@ -28,12 +28,14 @@ public class Modifier {
 	public final ResourceLocation name;
 	public final String debugName;
 	public final int weight;
+	public final ModifierType type;
 	public final List<Pair<Attribute, AttributeModifierSupplier>> modifiers;
 
-	private Modifier(ResourceLocation name, String debugName, int weight, List<Pair<Attribute, AttributeModifierSupplier>> modifiers) {
+	private Modifier(ResourceLocation name, String debugName, int weight, ModifierType type, List<Pair<Attribute, AttributeModifierSupplier>> modifiers) {
 		this.name = name;
 		this.debugName = debugName;
 		this.weight = weight;
+		this.type = type;
 		this.modifiers = modifiers;
 	}
 
@@ -95,15 +97,22 @@ public class Modifier {
 		return lines;
 	}
 
+	// TODO might want to distinguish between curio slots and armor slots in future, too
+	public enum ModifierType {
+		EQUIPPED, HELD, BOTH
+	}
+
 	public static class ModifierBuilder {
 		int weight = 100;
 		final ResourceLocation name;
 		final String debugName;
+		final ModifierType type;
 		List<Pair<Attribute, AttributeModifierSupplier>> modifiers = new ArrayList<>();
 
-		public ModifierBuilder(ResourceLocation name, String debugName) {
+		public ModifierBuilder(ResourceLocation name, String debugName, ModifierType type) {
 			this.name = name;
 			this.debugName = debugName;
+			this.type = type;
 		}
 
 		public ModifierBuilder setWeight(int weight) {
@@ -117,7 +126,7 @@ public class Modifier {
 		}
 
 		public Modifier build() {
-			return new Modifier(name, debugName, weight, modifiers);
+			return new Modifier(name, debugName, weight, type, modifiers);
 		}
 	}
 

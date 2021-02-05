@@ -1,16 +1,17 @@
 package cursedflames.modifiers.common.curio;
 
-import cursedflames.modifiers.ModifiersMod;
 import cursedflames.modifiers.common.modifier.Modifier;
 import cursedflames.modifiers.common.modifier.ModifierHandler;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
-public class EventHandlerCurio {
+public class CurioCompat implements ICurioProxy {
 	@SubscribeEvent
-	public static void onCurioChange(CurioChangeEvent event) {
+	public void onCurioChange(CurioChangeEvent event) {
 		LivingEntity entity = event.getEntityLiving();
 		ItemStack from = event.getFrom();
 		ItemStack to = event.getTo();
@@ -29,5 +30,11 @@ public class EventHandlerCurio {
 			ModifierHandler.setModifier(to, modifier);
 		}
 		ModifierHandler.applyCurioModifier(entity, modifier, identifier, slot);
+	}
+
+	@Override public boolean isModifiableCurio(ItemStack stack) {
+		Item item = stack.getItem();
+		// TODO we'll want to check configs to make sure there's at least one curio type in the tags that accepts modifiers
+		return !CuriosApi.getCuriosHelper().getCurioTags(item).isEmpty();
 	}
 }
