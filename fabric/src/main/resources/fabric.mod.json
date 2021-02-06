@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "modifiers",
+  "version": "${version}",
+  "name": "Modifiers",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "CursedFlames"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "Insert License Here",
+  "icon": "assets/modifiers/textures/item/modifier_book.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "cursedflames.modifiers.fabric.ModifiersModFabric"
+    ]
+  },
+  "mixins": [
+    "modifiers.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": ">=1.16.4"
+  }
+}
