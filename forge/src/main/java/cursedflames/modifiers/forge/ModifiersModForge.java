@@ -6,6 +6,8 @@ import java.util.List;
 import cursedflames.modifiers.ModifiersMod;
 import cursedflames.modifiers.common.curio.ICurioProxy;
 import cursedflames.modifiers.common.item.ItemModifierBook;
+import cursedflames.modifiers.common.network.NetworkHandler;
+import cursedflames.modifiers.forge.network.NetworkHandlerForge;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -42,6 +44,8 @@ public class ModifiersModForge extends ModifiersMod {
 	}
 
 	static {
+		NetworkHandler.setProxy(new NetworkHandlerForge());
+
 		GROUP_BOOKS = new ItemGroup(-1, ModifiersMod.MODID+"_books") {
 			@Override
 			public ItemStack createIcon() {
