@@ -9,12 +9,9 @@ public class ModifiersMod {
 
     public static final String MODID = "modifiers";
 
-    public static NetworkHandlerProxy networkProxy;
-
     public static ICurioProxy curioProxy;
 
     public static ItemModifierBook modifier_book;
 
-    // TODO sort creative tab/JEI
     public static ItemGroup GROUP_BOOKS;
 }

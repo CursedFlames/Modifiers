@@ -10,3 +10,7 @@ dependencies {
 architectury {
     common()
 }
+
+loom {
+    accessWidener "src/main/resources/modifiers.accesswidener"
+}

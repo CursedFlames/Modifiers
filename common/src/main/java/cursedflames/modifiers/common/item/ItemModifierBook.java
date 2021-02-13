@@ -49,23 +49,23 @@ public class ItemModifierBook extends Item {
 				new Identifier(stack.getTag().getString(ModifierHandler.bookTagName)));
 		if (mod == null)
 			return base;
-		base.append(": ");
-		base.append(mod.getFormattedName());
-		return base;
+		return new TranslatableText("misc.modifiers.modifier_prefix").append(mod.getFormattedName());
 	}
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World worldIn,
 							   List<Text> tooltip, TooltipContext flagIn) {
-		if (!stack.hasTag() || !stack.getTag().contains(ModifierHandler.bookTagName))
-			return;
-		Modifier mod = Modifiers.modifiers.get(
-				new Identifier(stack.getTag().getString(ModifierHandler.bookTagName)));
-		if (mod == null)
-			return;
-		tooltip.addAll(mod.getInfoLines());
-		tooltip.add(new TranslatableText(this.getTranslationKey()+".tooltip.0"));
-		tooltip.add(new TranslatableText(this.getTranslationKey()+".tooltip.1"));
+		if (stack.hasTag() && stack.getTag().contains(ModifierHandler.bookTagName)) {
+			Modifier mod = Modifiers.modifiers.get(
+					new Identifier(stack.getTag().getString(ModifierHandler.bookTagName)));
+			if (mod != null) {
+				tooltip.addAll(mod.getInfoLines());
+				tooltip.add(new TranslatableText(this.getTranslationKey()+".tooltip.0"));
+				tooltip.add(new TranslatableText(this.getTranslationKey()+".tooltip.1"));
+				return;
+			}
+		}
+		tooltip.add(new TranslatableText(this.getTranslationKey()+".tooltip.invalid"));
 	}
 
 	protected List<ItemStack> getStacks() {

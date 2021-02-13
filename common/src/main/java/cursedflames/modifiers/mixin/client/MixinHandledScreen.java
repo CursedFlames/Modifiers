@@ -1,5 +1,8 @@
 package cursedflames.modifiers.mixin.client;
 
+import cursedflames.modifiers.client.SmithingScreenReforge;
+import cursedflames.modifiers.common.network.NetworkHandler;
+import cursedflames.modifiers.common.network.PacketC2SReforge;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.SmithingScreen;
@@ -13,25 +16,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HandledScreen.class)
-public abstract class MixinContainerScreen extends Screen {
-	private MixinContainerScreen(Text titleIn) {
+public abstract class MixinHandledScreen extends Screen {
+	private MixinHandledScreen(Text titleIn) {
 		super(titleIn);
 	}
-
-	private ButtonWidget button;
-
-//	@Override
-//	protected void init() {
-//		super.init();
-//		this.button = new Button(0, 0, 80, 20, new StringTextComponent("test"), (button) -> {});
-//		addButton(this.button);
-//	}
 
 	@Inject(method="init", at=@At("RETURN"))
 	private void onInit(CallbackInfo ci) {
 		if (((Object) this) instanceof SmithingScreen) {
-			this.button = new ButtonWidget(0, 0, 80, 20, new LiteralText("test"), (button) -> {});
-			addButton(this.button);
+			((SmithingScreenReforge) this).modifiers_init();
 		}
 	}
 }

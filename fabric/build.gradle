@@ -10,6 +10,10 @@ architectury {
     platformSetupLoomIde()
 }
 
+loom {
+    accessWidener "src/main/resources/modifiers.accesswidener"
+}
+
 dependencies {
     modCompile "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modCompile "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"

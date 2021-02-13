@@ -80,13 +80,8 @@ public class Modifiers {
 		addCurio(curio("rash").setWeight(200).addModifier(EntityAttributes.GENERIC_ATTACK_SPEED, mod(0.02, MULTIPLY_TOTAL)).build());
 		addCurio(curio("intrepid").setWeight(100).addModifier(EntityAttributes.GENERIC_ATTACK_SPEED, mod(0.03, MULTIPLY_TOTAL)).build());
 		addCurio(curio("violent").setWeight(100).addModifier(EntityAttributes.GENERIC_ATTACK_SPEED, mod(0.04, MULTIPLY_TOTAL)).build());
-		// FIXME remove this one before release
-		addCurio(both("debug").setWeight(0)
-				.addModifier(EntityAttributes.GENERIC_MAX_HEALTH, mod(1, ADDITION))
-				.addModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, mod(2.0, MULTIPLY_BASE))
-				.build());
 
-		addTool(tool("legendary").setWeight(50)
+		addTool(tool("legendary").setWeight(30)
 				.addModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, mod(0.15, MULTIPLY_TOTAL))
 				.addModifier(EntityAttributes.GENERIC_ATTACK_SPEED, mod(0.1, MULTIPLY_TOTAL))
 				.addModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, mod(0.05, MULTIPLY_TOTAL))
@@ -104,7 +99,7 @@ public class Modifiers {
 				.addModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, mod(0.05, MULTIPLY_TOTAL))
 				.build());
 
-		addTool(tool("broken").setWeight(100)
+		addTool(tool("broken").setWeight(70)
 				.addModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, mod(-0.2, MULTIPLY_TOTAL))
 				.build());
 

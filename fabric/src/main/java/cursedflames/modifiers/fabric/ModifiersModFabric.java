@@ -13,6 +13,7 @@ import net.minecraft.util.registry.Registry;
 
 public class ModifiersModFabric extends ModifiersMod implements ModInitializer {
     @Override public void onInitialize() {
+        NetworkHandler.register();
         modifier_book = new ItemModifierBook();
         Registry.register(Registry.ITEM, new Identifier(MODID, "modifier_book"), modifier_book);
     }

@@ -25,6 +25,7 @@
 
 package cursedflames.modifiers.common.network;
 
+import cursedflames.modifiers.ModifiersMod;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -46,12 +47,17 @@ public class NetworkHandler {
 
 	public static void register() {
 		// Commented out example until I actually add any packets
-//        registerMessage("foo", PacketFoo.class, PacketFoo::encode,
-//            PacketFoo::new, mainThreadHandler(PacketFoo.Handler::handle));
+        registerMessage(new Identifier(ModifiersMod.MODID, "reforge"), 0, Side.ClientToServer,
+				PacketC2SReforge.class, PacketC2SReforge::encode,
+				PacketC2SReforge::new, mainThreadHandler(PacketC2SReforge.Handler::handle));
 	}
 
 	private static <T> BiConsumer<T, PacketContext> mainThreadHandler(Consumer<? super T> handler) {
 		return (packet, ctx) -> ctx.threadExecutor.submit(() -> handler.accept(packet));
+	}
+
+	private static <T> BiConsumer<T, PacketContext> mainThreadHandler(BiConsumer<? super T, PacketContext> handler) {
+		return (packet, ctx) -> ctx.threadExecutor.submit(() -> handler.accept(packet, ctx));
 	}
 
 //    private static <T> BiConsumer<T, PacketContext> mainThreadHandler(BiConsumer<? super T, ? super Level> handler) {
@@ -60,7 +66,7 @@ public class NetworkHandler {
 
 
 	/** id only used on fabric, discrim only used on forge */
-	public static <MSG> void registerMessage(Identifier id, int discrim, NetworkHandler.Side side,
+	public static <MSG> void registerMessage(Identifier id, int discrim, Side side,
 							   Class<MSG> clazz,
 							   BiConsumer<MSG, PacketByteBuf> encode,
 							   Function<PacketByteBuf, MSG> decode,

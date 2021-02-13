@@ -32,6 +32,7 @@ import top.theillusivec4.curios.api.SlotTypePreset;
 @Mod(ModifiersMod.MODID)
 public class ModifiersModForge extends ModifiersMod {
 	public ModifiersModForge() {
+		NetworkHandler.register();
 		// Register the setup method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		// Register the doClientStuff method for modloading

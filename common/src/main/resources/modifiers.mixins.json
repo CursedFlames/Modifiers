@@ -1,19 +1,21 @@
 {
-	"required": true,
-	"package": "cursedflames.modifiers.mixin",
-	"compatibilityLevel": "JAVA_8",
-	"mixins": [
-		"MixinAnvilContainer",
-		"MixinItem",
-		"MixinLivingEntity",
-		"MixinSmithingTableContainer"
-	],
-	"client":[
-		"client.MixinContainerScreen",
-		"client.MixinItemStack"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"minVersion": "0.8"
+  "required": true,
+  "package": "cursedflames.modifiers.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinAnvilContainer",
+    "MixinItem",
+    "MixinLivingEntity",
+    "MixinSmithingTableContainer"
+  ],
+  "client": [
+    "client.MixinHandledScreen",
+    "client.MixinForgingScreen",
+    "client.MixinItemStack",
+    "client.MixinSmithingScreen"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
 }
