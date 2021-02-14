@@ -33,9 +33,7 @@ public abstract class MixinAnvilContainer extends ForgingScreenHandler {
 	@Inject(method = "updateResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;get(Lnet/minecraft/item/ItemStack;)Ljava/util/Map;", ordinal = 0),
 		locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void onUpdateRepairOutput(CallbackInfo ci, ItemStack stack, int i, int j, int k, ItemStack output, ItemStack stack2) {
-//		System.out.println(stack.getItem().getRegistryName().toString() + " " + stack2.getItem().getRegistryName().toString() + " " + output.getItem().getRegistryName().toString());
 		if (stack2.getItem() == ModifiersMod.modifier_book && stack2.hasTag()) {
-			System.out.println(stack2.getTag().toString());
 			Modifier modifier = Modifiers.modifiers.get(new Identifier(stack2.getTag().getString(ModifierHandler.bookTagName)));
 			if (modifier != null) {
 				ModifierHandler.setModifier(output, modifier);

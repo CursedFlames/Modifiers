@@ -6,6 +6,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
@@ -20,6 +21,10 @@ public class TabButtonWidget extends ButtonWidget {
 
 	public TabButtonWidget(int i, int j, int k, int l, Text text, PressAction pressAction) {
 		super(i, j, k, l, text, pressAction);
+	}
+
+	public TabButtonWidget(int i, int j, int k, int l, Text text, PressAction pressAction, ButtonWidget.TooltipSupplier tooltipSupplier) {
+		super(i, j, k, l, text, pressAction, tooltipSupplier);
 	}
 
 	public void setTextureUV(int i, int j, int k, int l, Identifier identifier) {
@@ -47,8 +52,12 @@ public class TabButtonWidget extends ButtonWidget {
 		}
 
 		this.drawTexture(matrixStack, this.x, this.y, u, v, this.width, this.height);
-		RenderSystem.enableDepthTest();
 		int color = this.active ? 16777215 : 10526880;
 		drawCenteredText(matrixStack, textRenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, color | MathHelper.ceil(this.alpha * 255.0F) << 24);
+
+		if (this.isHovered()) {
+			this.renderToolTip(matrixStack, i, j);
+		}
+		RenderSystem.enableDepthTest();
 	}
 }

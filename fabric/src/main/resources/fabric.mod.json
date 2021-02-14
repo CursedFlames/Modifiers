@@ -3,15 +3,16 @@
   "id": "modifiers",
   "version": "${version}",
   "name": "Modifiers",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "Adds random modifiers to equipment that give minor tweaks to attributes",
   "authors": [
     "CursedFlames"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/CursedFlames/Modifiers",
+    "issues": "https://github.com/CursedFlames/Modifiers/issues"
   },
-  "license": "Insert License Here",
+  "license": "MIT",
   "icon": "assets/modifiers/textures/item/modifier_book.png",
   "environment": "*",
   "entrypoints": {

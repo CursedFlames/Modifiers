@@ -56,7 +56,6 @@ public class ModifiersModForge extends ModifiersMod {
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
-		System.out.println(ModList.get().getMods());
 		if (ModList.get().isLoaded("curios")) {
 			try {
 				curioProxy = (ICurioProxy) Class.forName("cursedflames.modifiers.forge.curio.CurioCompat").newInstance();

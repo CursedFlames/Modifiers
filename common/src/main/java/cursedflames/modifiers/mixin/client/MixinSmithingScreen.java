@@ -8,8 +8,6 @@ import cursedflames.modifiers.common.network.NetworkHandler;
 import cursedflames.modifiers.common.network.PacketC2SReforge;
 import net.minecraft.client.gui.screen.ingame.ForgingScreen;
 import net.minecraft.client.gui.screen.ingame.SmithingScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -25,10 +23,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SmithingScreen.class)
 public abstract class MixinSmithingScreen extends ForgingScreen implements SmithingScreenReforge {
-	private ButtonWidget modifiers_reforgeButton;
+	private TabButtonWidget modifiers_reforgeButton;
 	private TabButtonWidget modifiers_tabButton1;
 	private TabButtonWidget modifiers_tabButton2;
 	private boolean modifiers_onTab2 = false;
+	private boolean modifiers_canReforge = false;
 
 	private Text modifiers_tab1Title;
 	private Text modifiers_tab2Title;
@@ -56,7 +55,7 @@ public abstract class MixinSmithingScreen extends ForgingScreen implements Smith
 		modifiers_reforgeButton.visible = true;
 		this.title = modifiers_tab2Title;
 		Slot slot = this.getScreenHandler().slots.get(2);
-		slot.x = 150;
+		slot.x = 152;
 		slot.y = 8;
 		this.modifiers_tabButton1.toggled = false;
 		this.modifiers_tabButton2.toggled = true;
@@ -71,10 +70,12 @@ public abstract class MixinSmithingScreen extends ForgingScreen implements Smith
 		modifiers_outputSlotY = slot.y;
 		this.modifiers_tabButton1 = new TabButtonWidget(k-70, l+2, 70, 18, new TranslatableText("container.modifiers.reforge.tab1"), (button) -> modifiers_toTab1());
 		this.modifiers_tabButton2 = new TabButtonWidget(k-70, l+22, 70, 18, new TranslatableText("container.modifiers.reforge.tab2"), (button) -> modifiers_toTab2());
-		this.modifiers_tabButton1.toggled = true;
 		this.modifiers_tabButton1.setTextureUV(0, 166, 70, 18, new Identifier("modifiers", "textures/gui/reforger.png"));
 		this.modifiers_tabButton2.setTextureUV(0, 166, 70, 18, new Identifier("modifiers", "textures/gui/reforger.png"));
-		this.modifiers_reforgeButton = new ButtonWidget(k+100, l+45, 69, 20, new TranslatableText("container.modifiers.reforge.reforge"), (button) -> NetworkHandler.sendToServer(new PacketC2SReforge()));
+		this.modifiers_reforgeButton = new TabButtonWidget(k+132, l+45, 20, 20, Text.of(""),
+				(button) -> NetworkHandler.sendToServer(new PacketC2SReforge()),
+				(button, matrixStack, i, j) -> this.renderTooltip(matrixStack, new TranslatableText("container.modifiers.reforge.reforge"), i, j));
+		this.modifiers_reforgeButton.setTextureUV(0, 202, 20, 20, new Identifier("modifiers", "textures/gui/reforger.png"));
 		addButton(this.modifiers_tabButton1);
 		addButton(this.modifiers_tabButton2);
 		addButton(this.modifiers_reforgeButton);
@@ -86,6 +87,13 @@ public abstract class MixinSmithingScreen extends ForgingScreen implements Smith
 	@Override
 	public boolean modifiers_onTab2() {
 		return modifiers_onTab2;
+	}
+
+	@Override
+	public void modifiers_setCanReforge(boolean canReforge) {
+		this.modifiers_canReforge = canReforge;
+		this.modifiers_reforgeButton.toggled = canReforge;
+		this.modifiers_reforgeButton.active = canReforge;
 	}
 
 	@Inject(method = "drawForeground", at = @At("RETURN"))

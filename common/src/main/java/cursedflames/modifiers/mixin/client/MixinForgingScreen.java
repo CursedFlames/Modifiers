@@ -37,6 +37,9 @@ public abstract class MixinForgingScreen extends HandledScreen {
 				ItemStack stack2 = this.handler.getSlot(1).getStack();
 
 				// TODO add a util function somewhere for `canReforge(stack1, stack2)`
+				boolean cantReforge = !stack1.isEmpty() && !stack1.getItem().canRepair(stack1, stack2);
+				// canReforge is also true for empty slot 1. Probably how it should behave.
+				((SmithingScreenReforge) this).modifiers_setCanReforge(!cantReforge);
 				if (!stack1.isEmpty() && !stack1.getItem().canRepair(stack1, stack2)) {
 					this.drawTexture(matrixStack, k + 99 - 53, l + 45, this.backgroundWidth, 0, 28, 21);
 				}

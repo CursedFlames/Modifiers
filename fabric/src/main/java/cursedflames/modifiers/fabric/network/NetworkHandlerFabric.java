@@ -54,8 +54,6 @@ public class NetworkHandlerFabric implements NetworkHandlerProxy {
 							   BiConsumer<MSG, PacketByteBuf> encode,
 							   Function<PacketByteBuf, MSG> decode,
 							   BiConsumer<MSG, NetworkHandler.PacketContext> handler) {
-		System.out.println("registering message");
-		System.out.println(encode);
 		ENCODERS.put(clazz, encode);
 		PACKET_IDS.put(clazz, id);
 		if (side == NetworkHandler.Side.ClientToServer) {
@@ -77,7 +75,6 @@ public class NetworkHandlerFabric implements NetworkHandlerProxy {
 
 	@Override public <MSG> void sendToServer(MSG packet) {
 		Identifier packetId = PACKET_IDS.get(packet.getClass());
-		System.out.println(ENCODERS);
 		@SuppressWarnings("unchecked")
 		BiConsumer<MSG, PacketByteBuf> encoder = (BiConsumer<MSG, PacketByteBuf>) ENCODERS.get(packet.getClass());
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
