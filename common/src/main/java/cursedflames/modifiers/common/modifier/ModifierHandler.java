@@ -74,7 +74,7 @@ public class ModifierHandler {
 			Pair<EntityAttribute, Modifier.AttributeModifierSupplier> entry = modifier.modifiers.get(i);
 			UUID id = getCurioUuid(slotIdentifier, index, i);
 			EntityAttributeInstance instance = entity.getAttributeInstance(entry.getKey());
-			if (instance != null) {
+			if (instance != null && instance.getModifier(id) == null) {
 				instance.addTemporaryModifier(entry.getValue().getAttributeModifier(id, "curio_modifier_"+modifier.debugName));
 			}
 		}
@@ -105,7 +105,7 @@ public class ModifierHandler {
 			Pair<EntityAttribute, Modifier.AttributeModifierSupplier> entry = modifier.modifiers.get(i);
 			UUID id = getEquipmentUuid(type, i);
 			EntityAttributeInstance instance = entity.getAttributeInstance(entry.getKey());
-			if (instance != null) {
+			if (instance != null && instance.getModifier(id) == null) {
 				instance.addTemporaryModifier(entry.getValue().getAttributeModifier(id, "equipment_modifier_"+modifier.debugName));
 			}
 		}

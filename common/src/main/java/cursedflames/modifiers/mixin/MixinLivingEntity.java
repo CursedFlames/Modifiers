@@ -23,6 +23,7 @@ public abstract class MixinLivingEntity extends Entity {
 		super(entityTypeIn, worldIn);
 	}
 
+	// FIXME this doesn't detect dropped hand items correctly
 	@Inject(method = "method_30129", at = @At(value="INVOKE", target="Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), locals=LocalCapture.CAPTURE_FAILHARD)
 	private void onCollectEquipmentChanges(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir,
 			Map<EquipmentSlot, ItemStack> v1, EquipmentSlot[] v2, int i, int j, EquipmentSlot slotType, ItemStack from, ItemStack to) {
