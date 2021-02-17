@@ -24,8 +24,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import top.theillusivec4.curios.api.SlotTypeMessage;
-import top.theillusivec4.curios.api.SlotTypePreset;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -63,7 +61,7 @@ public class ModifiersModForge extends ModifiersMod {
 			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException | ClassCastException e) {
 				e.printStackTrace();
 				// FIXME probably don't want this in non-debug releases
-				throw new Error();
+				throw new Error("Failed to load Curios compatibility. Go tell CursedFlames that her mod is broken.");
 			}
 		}
 		if (curioProxy == null) {
@@ -76,25 +74,23 @@ public class ModifiersModForge extends ModifiersMod {
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {
-		// some example code to dispatch IMC to another mod
-		// FIXME testing only
-		SlotTypePreset[] slots = {
-				SlotTypePreset.HEAD, SlotTypePreset.NECKLACE, SlotTypePreset.BACK, SlotTypePreset.BODY,
-				SlotTypePreset.HANDS, SlotTypePreset.RING, SlotTypePreset.CHARM
-		};
-		List<SlotTypeMessage.Builder> builders = new ArrayList<>();
-		for (SlotTypePreset slot : slots) {
-			SlotTypeMessage.Builder builder = slot.getMessageBuilder();
-			if (slot == SlotTypePreset.RING) {
-				builder.size(2);
-			}
-			builders.add(builder);
-		}
-		for (SlotTypeMessage.Builder builder : builders) {
-			SlotTypeMessage message = builder.build();
-			InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
-					()->message);
-		}
+//		SlotTypePreset[] slots = {
+//				SlotTypePreset.HEAD, SlotTypePreset.NECKLACE, SlotTypePreset.BACK, SlotTypePreset.BODY,
+//				SlotTypePreset.HANDS, SlotTypePreset.RING, SlotTypePreset.CHARM
+//		};
+//		List<SlotTypeMessage.Builder> builders = new ArrayList<>();
+//		for (SlotTypePreset slot : slots) {
+//			SlotTypeMessage.Builder builder = slot.getMessageBuilder();
+//			if (slot == SlotTypePreset.RING) {
+//				builder.size(2);
+//			}
+//			builders.add(builder);
+//		}
+//		for (SlotTypeMessage.Builder builder : builders) {
+//			SlotTypeMessage message = builder.build();
+//			InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+//					()->message);
+//		}
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
