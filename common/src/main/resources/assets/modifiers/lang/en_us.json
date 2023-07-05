@@ -1,10 +1,12 @@
 {
 	"itemGroup.modifiers_books": "Modifiers",
 	"itemGroup.modifiers.books": "Modifiers",
+	"item.modifiers.reforge_template": "Reforging Template",
 	"item.modifiers.modifier_book": "Modifier Book",
 	"item.modifiers.modifier_book.tooltip.0": "§9Combine with an item in an anvil to set its modifier.",
 	"item.modifiers.modifier_book.tooltip.1": "§dOnly available in creative mode.",
 	"item.modifiers.modifier_book.tooltip.invalid": "§dInvalid modifier",
+	"modifiers.waiting_reroll": "§9Modifier will be rerolled when equipped or held in hand",
 	"modifiers.curio.wrong_slot": "not enabled for slot type",
 	"modifiers.curio.active": "active",
 	"misc.modifiers.modifier_prefix": "Modifier: ",
@@ -39,9 +41,5 @@
 	"modifier.modifiers.sluggish": "Sluggish",
 	"modifier.modifiers.slow": "Slow",
 	"modifier.modifiers.light": "Light",
-	"modifier.modifiers.heavy": "Heavy",
-	"container.modifiers.reforge": "Reforge Gear",
-	"container.modifiers.reforge.tab1": "Upgrade",
-	"container.modifiers.reforge.tab2": "Reforge",
-	"container.modifiers.reforge.reforge": "Reforge"
+	"modifier.modifiers.heavy": "Heavy"
 }

@@ -1,30 +1,23 @@
 package cursedflames.modifiers.forge;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cursedflames.modifiers.ModifiersMod;
 import cursedflames.modifiers.common.curio.ICurioProxy;
 import cursedflames.modifiers.common.item.ItemModifierBook;
-import cursedflames.modifiers.common.network.NetworkHandler;
-import cursedflames.modifiers.forge.network.NetworkHandlerForge;
+import cursedflames.modifiers.common.recipe.ReforgingRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 
@@ -33,7 +26,6 @@ import net.minecraftforge.registries.RegisterEvent;
 @Mod(ModifiersMod.MODID)
 public class ModifiersModForge extends ModifiersMod {
 	public ModifiersModForge() {
-		NetworkHandler.register();
 		// Register the setup method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		// Register the doClientStuff method for modloading
@@ -44,10 +36,6 @@ public class ModifiersModForge extends ModifiersMod {
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
-	}
-
-	static {
-		NetworkHandler.setProxy(new NetworkHandlerForge());
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
@@ -95,6 +83,7 @@ public class ModifiersModForge extends ModifiersMod {
 		event.register(ForgeRegistries.ITEMS.getRegistryKey(), helper -> {
 			modifier_book = new ItemModifierBook();
 			helper.register(new ResourceLocation(MODID, "modifier_book"), modifier_book);
+			helper.register(new ResourceLocation(MODID, "reforge_template"), reforge_template = new Item(new Item.Properties()));
 		});
 		event.register(Registries.CREATIVE_MODE_TAB, helper -> {
 			GROUP_BOOKS = CreativeModeTab
@@ -105,6 +94,9 @@ public class ModifiersModForge extends ModifiersMod {
 					.displayItems((params, output) -> output.acceptAll(modifier_book.getStacksForCreativeTab()))
 					.build();
 			helper.register(new ResourceLocation(MODID, "books"), GROUP_BOOKS);
+		});
+		event.register(ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey(), helper -> {
+			helper.register(new ResourceLocation(MODID, "smithing_reforge"), ReforgingRecipe.Serializer.INSTANCE);
 		});
 	}
 }

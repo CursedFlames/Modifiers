@@ -1,0 +1,7 @@
+{
+	"type": "modifiers:smithing_reforge",
+	"addition": "modifiers:special_repair",
+	"template": {
+		"item": "modifiers:reforge_template"
+	}
+}

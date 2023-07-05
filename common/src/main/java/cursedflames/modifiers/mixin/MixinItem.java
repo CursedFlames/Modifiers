@@ -19,6 +19,8 @@ public abstract class MixinItem {
 		Modifier modifier = ModifierHandler.getModifier(stack);
 		if (modifier != null && modifier != Modifiers.NONE) {
 			cir.setReturnValue(modifier.getFormattedName().append(" ").append(Component.translatable(this.getDescriptionId(stack))));
+		} else if (ModifierHandler.isWaitingReroll(stack)) {
+			cir.setReturnValue(Component.literal("[???] ").append(Component.translatable(this.getDescriptionId(stack))));
 		}
 	}
 

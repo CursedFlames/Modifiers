@@ -21,6 +21,8 @@ public class MixinItemStack {
 		Modifier modifier = ModifierHandler.getModifier((ItemStack) (Object) this);
 		if (modifier != null) {
 			list.addAll(modifier.getInfoLines());
+		} else if (ModifierHandler.isWaitingReroll((ItemStack) (Object) this)) {
+			list.add(Component.translatable("modifiers.waiting_reroll"));
 		}
 	}
 }

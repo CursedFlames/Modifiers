@@ -17,6 +17,7 @@ public class ModifierHandler {
 	public static final long COMMON_SEGMENT_CURIO = (0x7a6ca76cL) << 32;
 	public static final long COMMON_SEGMENT_EQUIPMENT = 0x9225d5c4fd8d434bL;
 	public static final String tagName = "itemModifier";
+	public static final String rerollTagName = "rollModifier";
 	public static final String bookTagName = "bookModifier";
 
 	public static boolean canHaveModifiers(ItemStack stack) {
@@ -41,8 +42,18 @@ public class ModifierHandler {
 		}
 	}
 
+	public static void prepareReroll(ItemStack stack) {
+		removeModifier(stack);
+		stack.getOrCreateTag().putString(rerollTagName, "default");
+	}
+
+	public static boolean isWaitingReroll(ItemStack stack) {
+		return stack.hasTag() && stack.getTag().contains(rerollTagName);
+	}
+
 	public static void setModifier(ItemStack stack, Modifier modifier) {
 		CompoundTag tag = stack.getOrCreateTag();
+		tag.remove(rerollTagName);
 		tag.putString(tagName, modifier.name.toString());
 	}
 

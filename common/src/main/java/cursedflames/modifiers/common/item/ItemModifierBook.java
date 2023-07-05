@@ -21,7 +21,6 @@ import java.util.List;
 
 public class ItemModifierBook extends Item {
 	public ItemModifierBook() {
-		// TODO item group
 		super(new Properties().rarity(Rarity.EPIC));
 	}
 
@@ -67,6 +66,7 @@ public class ItemModifierBook extends Item {
 		modifiers.addAll(Modifiers.tool_pool.modifiers);
 
 		List<ItemStack> stacks = new ArrayList<>();
+		stacks.add(new ItemStack(ModifiersMod.reforge_template));
 		for (Modifier mod : modifiers) {
 			ItemStack stack = new ItemStack(this);
 			CompoundTag tag = stack.getOrCreateTag();
