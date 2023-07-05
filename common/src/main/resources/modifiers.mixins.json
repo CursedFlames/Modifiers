@@ -9,8 +9,8 @@
     "MixinSmithingTableContainer"
   ],
   "client": [
-    "client.MixinHandledScreen",
-    "client.MixinForgingScreen",
+    "client.MixinItemCombinerScreen",
+    "client.MixinSmithingScreen",
     "client.MixinItemStack",
     "client.MixinSmithingScreen"
   ],

@@ -26,11 +26,11 @@
 package cursedflames.modifiers.common.network;
 
 import cursedflames.modifiers.ModifiersMod;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.thread.BlockableEventLoop;
 
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
@@ -46,8 +46,7 @@ public class NetworkHandler {
 	}
 
 	public static void register() {
-		// Commented out example until I actually add any packets
-        registerMessage(new Identifier(ModifiersMod.MODID, "reforge"), 0, Side.ClientToServer,
+        registerMessage(new ResourceLocation(ModifiersMod.MODID, "reforge"), 0, Side.ClientToServer,
 				PacketC2SReforge.class, PacketC2SReforge::encode,
 				PacketC2SReforge::new, mainThreadHandler(PacketC2SReforge.Handler::handle));
 	}
@@ -66,10 +65,10 @@ public class NetworkHandler {
 
 
 	/** id only used on fabric, discrim only used on forge */
-	public static <MSG> void registerMessage(Identifier id, int discrim, Side side,
+	public static <MSG> void registerMessage(ResourceLocation id, int discrim, Side side,
 							   Class<MSG> clazz,
-							   BiConsumer<MSG, PacketByteBuf> encode,
-							   Function<PacketByteBuf, MSG> decode,
+							   BiConsumer<MSG, FriendlyByteBuf> encode,
+							   Function<FriendlyByteBuf, MSG> decode,
 							   BiConsumer<MSG, NetworkHandler.PacketContext> handler) {
 		proxy.registerMessage(id, discrim, side, clazz, encode, decode, handler);
 	}
@@ -77,7 +76,7 @@ public class NetworkHandler {
 	public static <MSG> void sendToServer(MSG packet) {
 		proxy.sendToServer(packet);
 	}
-	public static <MSG> void sendTo(MSG packet, ServerPlayerEntity player) {
+	public static <MSG> void sendTo(MSG packet, ServerPlayer player) {
 		proxy.sendTo(packet, player);
 	}
 	public static <MSG> void sendToAllPlayers(MSG packet) {
@@ -86,9 +85,9 @@ public class NetworkHandler {
 
 	// Based on Fabric's PacketContext
 	public static class PacketContext {
-		@Nullable public final PlayerEntity player;
-		public final ThreadExecutor<?> threadExecutor;
-		public PacketContext(@Nullable PlayerEntity player, ThreadExecutor<?> threadExecutor) {
+		@Nullable public final Player player;
+		public final BlockableEventLoop<?> threadExecutor;
+		public PacketContext(@Nullable Player player, BlockableEventLoop<?> threadExecutor) {
 			this.player = player;
 			this.threadExecutor = threadExecutor;
 		}

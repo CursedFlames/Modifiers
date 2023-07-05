@@ -1,10 +1,10 @@
 package cursedflames.modifiers.common.modifier;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Predicate;
 
 public class ModifierPool {
@@ -23,7 +23,7 @@ public class ModifierPool {
 		totalWeight += mod.weight;
 	}
 
-	public Modifier roll(Random random) {
+	public Modifier roll(RandomSource random) {
 		if (totalWeight == 0 || modifiers.isEmpty()) return null;
 		int i = random.nextInt(totalWeight);
 		int j = 0;

@@ -1,14 +1,13 @@
 {
   "schemaVersion": 1,
   "id": "modifiers",
-  "version": "${version}",
+  "version": "${mod_version}",
   "name": "Modifiers",
   "description": "Adds random modifiers to equipment that give minor tweaks to attributes",
   "authors": [
     "CursedFlames"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/CursedFlames/Modifiers",
     "issues": "https://github.com/CursedFlames/Modifiers/issues"
   },

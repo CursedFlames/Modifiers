@@ -28,12 +28,16 @@ package cursedflames.modifiers.fabric.network;
 import cursedflames.modifiers.common.network.NetworkHandler;
 import cursedflames.modifiers.common.network.NetworkHandlerProxy;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,61 +45,50 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class NetworkHandlerFabric implements NetworkHandlerProxy {
-	private static final Map<Class<?>, BiConsumer<?, PacketByteBuf>> ENCODERS = new ConcurrentHashMap<>();
-	private static final Map<Class<?>, Identifier> PACKET_IDS = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, BiConsumer<?, FriendlyByteBuf>> ENCODERS = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, ResourceLocation> PACKET_IDS = new ConcurrentHashMap<>();
 
-	private static NetworkHandler.PacketContext convertContext(PacketContext context) {
-		return new NetworkHandler.PacketContext(context.getPlayer(), context.getTaskQueue());
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override public <MSG> void registerMessage(Identifier id, int discrim, NetworkHandler.Side side,
+	@Override public <MSG> void registerMessage(ResourceLocation id, int discrim, NetworkHandler.Side side,
 							   Class<MSG> clazz,
-							   BiConsumer<MSG, PacketByteBuf> encode,
-							   Function<PacketByteBuf, MSG> decode,
+							   BiConsumer<MSG, FriendlyByteBuf> encode,
+							   Function<FriendlyByteBuf, MSG> decode,
 							   BiConsumer<MSG, NetworkHandler.PacketContext> handler) {
 		ENCODERS.put(clazz, encode);
 		PACKET_IDS.put(clazz, id);
 		if (side == NetworkHandler.Side.ClientToServer) {
-			ServerSidePacketRegistry.INSTANCE.register(
-					id, (ctx, received) -> {
-						MSG packet = decode.apply(received);
-						handler.accept(packet, convertContext(ctx));
+			ServerPlayNetworking.registerGlobalReceiver(
+					id, (MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler_, FriendlyByteBuf buf, PacketSender responseSender) -> {
+						MSG packet = decode.apply(buf);
+						handler.accept(packet, new NetworkHandler.PacketContext(player, server));
 					}
 			);
 		} else {
-			ClientSidePacketRegistry.INSTANCE.register(
-					id, (ctx, received) -> {
-						MSG packet = decode.apply(received);
-						handler.accept(packet, convertContext(ctx));
+			ClientPlayNetworking.registerGlobalReceiver(
+					id, (Minecraft client, ClientPacketListener handler_, FriendlyByteBuf buf, PacketSender responseSender) -> {
+						MSG packet = decode.apply(buf);
+						handler.accept(packet, new NetworkHandler.PacketContext(client.player, client));
 					}
 			);
 		}
 	}
 
 	@Override public <MSG> void sendToServer(MSG packet) {
-		Identifier packetId = PACKET_IDS.get(packet.getClass());
+		ResourceLocation packetId = PACKET_IDS.get(packet.getClass());
 		@SuppressWarnings("unchecked")
-		BiConsumer<MSG, PacketByteBuf> encoder = (BiConsumer<MSG, PacketByteBuf>) ENCODERS.get(packet.getClass());
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		BiConsumer<MSG, FriendlyByteBuf> encoder = (BiConsumer<MSG, FriendlyByteBuf>) ENCODERS.get(packet.getClass());
+		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 		encoder.accept(packet, buf);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(packetId, buf);
+        ClientPlayNetworking.send(packetId, buf);
 	}
-	@Override public <MSG> void sendTo(MSG packet, ServerPlayerEntity player) {
-		Identifier packetId = PACKET_IDS.get(packet.getClass());
+	@Override public <MSG> void sendTo(MSG packet, ServerPlayer player) {
+		ResourceLocation packetId = PACKET_IDS.get(packet.getClass());
 		@SuppressWarnings("unchecked")
-		BiConsumer<MSG, PacketByteBuf> encoder = (BiConsumer<MSG, PacketByteBuf>) ENCODERS.get(packet.getClass());
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		BiConsumer<MSG, FriendlyByteBuf> encoder = (BiConsumer<MSG, FriendlyByteBuf>) ENCODERS.get(packet.getClass());
+		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 		encoder.accept(packet, buf);
-		ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packetId, buf);
+		ServerPlayNetworking.send(player, packetId, buf);
 	}
 	@Override public <MSG> void sendToAllPlayers(MSG packet) {
-//		Identifier packetId = PACKET_IDS.get(packet.getClass());
-//		@SuppressWarnings("unchecked")
-//		BiConsumer<MSG, PacketByteBuf> encoder = (BiConsumer<MSG, PacketByteBuf>) ENCODERS.get(packet.getClass());
-//		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-//		encoder.accept(packet, buf);
-//		ServerSidePacketRegistry.INSTANCE.;
 		throw new UnsupportedOperationException();
 	}
 }

@@ -8,14 +8,14 @@ import cursedflames.modifiers.common.curio.ICurioProxy;
 import cursedflames.modifiers.common.item.ItemModifierBook;
 import cursedflames.modifiers.common.network.NetworkHandler;
 import cursedflames.modifiers.forge.network.NetworkHandlerForge;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -24,6 +24,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -40,30 +43,24 @@ public class ModifiersModForge extends ModifiersMod {
 
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
+		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 	}
 
 	static {
 		NetworkHandler.setProxy(new NetworkHandlerForge());
-
-		GROUP_BOOKS = new ItemGroup(-1, ModifiersMod.MODID+"_books") {
-			@Override
-			public ItemStack createIcon() {
-				return new ItemStack(modifier_book);
-			}
-		};
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
-		if (ModList.get().isLoaded("curios")) {
-			try {
-				curioProxy = (ICurioProxy) Class.forName("cursedflames.modifiers.forge.curio.CurioCompat").newInstance();
-				MinecraftForge.EVENT_BUS.register(curioProxy);
-			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException | ClassCastException e) {
-				e.printStackTrace();
-				// FIXME probably don't want this in non-debug releases
-				throw new Error("Failed to load Curios compatibility. Go tell CursedFlames that her mod is broken.");
-			}
-		}
+//		if (ModList.get().isLoaded("curios")) {
+//			try {
+//				curioProxy = (ICurioProxy) Class.forName("cursedflames.modifiers.forge.curio.CurioCompat").newInstance();
+//				MinecraftForge.EVENT_BUS.register(curioProxy);
+//			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException | ClassCastException e) {
+//				e.printStackTrace();
+//				// FIXME probably don't want this in non-debug releases
+//				throw new Error("Failed to load Curios compatibility. Go tell CursedFlames that her mod is broken.");
+//			}
+//		}
 		if (curioProxy == null) {
 			// Dummy implementation that does nothing
 			curioProxy = new ICurioProxy() {};
@@ -93,13 +90,21 @@ public class ModifiersModForge extends ModifiersMod {
 //		}
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class RegistryEvents {
-		@SubscribeEvent
-		public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
+	@SubscribeEvent
+	public void register(RegisterEvent event) {
+		event.register(ForgeRegistries.ITEMS.getRegistryKey(), helper -> {
 			modifier_book = new ItemModifierBook();
-			modifier_book.setRegistryName(new Identifier(MODID, "modifier_book"));
-			event.getRegistry().register(modifier_book);
-		}
+			helper.register(new ResourceLocation(MODID, "modifier_book"), modifier_book);
+		});
+		event.register(Registries.CREATIVE_MODE_TAB, helper -> {
+			GROUP_BOOKS = CreativeModeTab
+					.builder()
+					.withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+					.title(Component.translatable("itemGroup.modifiers_books"))
+					.icon(() -> new ItemStack(modifier_book))
+					.displayItems((params, output) -> output.acceptAll(modifier_book.getStacksForCreativeTab()))
+					.build();
+			helper.register(new ResourceLocation(MODID, "books"), GROUP_BOOKS);
+		});
 	}
 }

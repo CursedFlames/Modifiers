@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/CursedFlames/Modifiers"
 license="MIT"
 [[mods]]
 modId="modifiers"
-version="${version}"
+version="${mod_version}"
 displayName="Modifiers"
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="http://example.com/" #optional
@@ -26,7 +26,7 @@ Adds random modifiers to equipment that give minor tweaks to attributes'''
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[33.0.22,)" #mandatory
+    versionRange="[47.0.35,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -35,7 +35,7 @@ Adds random modifiers to equipment that give minor tweaks to attributes'''
 [[dependencies.modifiers]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.2,)"
+    versionRange="[1.20,1.21)"
     ordering="NONE"
     side="BOTH"
 # TODO put curios dependency here?
