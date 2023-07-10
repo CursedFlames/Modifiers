@@ -17,7 +17,10 @@
   "entrypoints": {
     "main": [
       "cursedflames.modifiers.fabric.ModifiersModFabric"
-    ]
+    ],
+    "jei_mod_plugin": [
+		"cursedflames.modifiers.common.integration.jei.JeiPlugin"
+	]
   },
   "mixins": [
     "modifiers.mixins.json"

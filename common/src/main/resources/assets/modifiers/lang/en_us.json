@@ -9,6 +9,7 @@
 	"modifiers.waiting_reroll": "§9Modifier will be rerolled when equipped or held in hand",
 	"modifiers.curio.wrong_slot": "not enabled for slot type",
 	"modifiers.curio.active": "active",
+	"modifiers.jei.reforging": "Reforging",
 	"misc.modifiers.modifier_prefix": "Modifier: ",
 	"modifier.modifiers.none": "None",
 	"modifier.modifiers.none.info": "No modifier",

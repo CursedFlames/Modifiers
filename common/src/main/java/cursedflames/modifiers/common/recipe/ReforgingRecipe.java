@@ -18,10 +18,11 @@ import java.util.function.BiPredicate;
 
 public class ReforgingRecipe implements SmithingRecipe {
 	private final ResourceLocation id;
-	final Ingredient template;
-	final Ingredient base;
-	final Ingredient add;
-	final boolean useRepairMaterialCondition;
+	// These fields are public to access from JEI; they probably shouldn't be used elsewhere
+	public final Ingredient template;
+	public final Ingredient base;
+	public final Ingredient add;
+	public final boolean useRepairMaterialCondition;
 
 	public ReforgingRecipe(ResourceLocation id, Ingredient template, Ingredient base, Ingredient add, boolean useRepairMaterialCondition) {
 		this.id = id;

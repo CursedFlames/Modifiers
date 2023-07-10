@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"key": {
+		"#": {
+			"item": "minecraft:iron_ingot"
+		},
+		"D": {
+			"item": "minecraft:diamond"
+		},
+		"S": {
+			"item": "modifiers:reforge_template"
+		}
+	},
+	"pattern": [
+		"#D#",
+		"#S#",
+		"#D#"
+	],
+	"result": {
+		"count": 2,
+		"item": "modifiers:reforge_template"
+	}
+}
