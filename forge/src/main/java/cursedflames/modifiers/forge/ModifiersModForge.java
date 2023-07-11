@@ -11,7 +11,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -20,6 +23,9 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
+
+import static net.minecraft.world.level.storage.loot.BuiltInLootTables.VILLAGE_ARMORER;
+import static net.minecraft.world.level.storage.loot.BuiltInLootTables.VILLAGE_WEAPONSMITH;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -34,7 +40,7 @@ public class ModifiersModForge extends ModifiersMod {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 
 		// Register ourselves for server and other game events we are interested in
-		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(temp.class);
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 	}
 
@@ -76,6 +82,19 @@ public class ModifiersModForge extends ModifiersMod {
 //			InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
 //					()->message);
 //		}
+	}
+
+	static class temp {
+		@SubscribeEvent
+		public static void lootLoad(LootTableLoadEvent event) {
+			var id = event.getName();
+			if (VILLAGE_WEAPONSMITH.equals(id) || VILLAGE_ARMORER.equals(id)) {
+				var pool = LootPool.lootPool()
+						.add(LootItem.lootTableItem(reforge_template))
+						.build();
+				event.getTable().addPool(pool);
+			}
+		}
 	}
 
 	@SubscribeEvent
